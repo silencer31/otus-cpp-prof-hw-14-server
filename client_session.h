@@ -7,6 +7,10 @@
 #include <memory>
 #include <map>
 
+#include "data_storage.h"
+
+using storage_ptr = std::shared_ptr<DataStorage>;
+
 using boost::asio::ip::tcp;
 
 class TaskServer;
@@ -15,8 +19,8 @@ class ClientSession : public std::enable_shared_from_this<ClientSession>
 {
 public:
 	
-	ClientSession(tcp::socket socket, int s_id)
-		: socket_(std::move(socket)), session_id(s_id), shutdown_flag(false)
+	ClientSession(tcp::socket socket, int s_id, const storage_ptr dstp)
+		: socket_(std::move(socket)), session_id(s_id), data_storage(dstp), shutdown_flag(false)
 	{}
 
 	~ClientSession() {
@@ -48,6 +52,8 @@ private: // methods
 private: // data
 	tcp::socket socket_;
 	int session_id;
+
+	const storage_ptr data_storage;
 
 	TaskServer *task_server_ptr;
 

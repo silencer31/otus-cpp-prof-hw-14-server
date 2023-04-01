@@ -22,12 +22,9 @@ void ClientSession::do_read()
 		[this, self](boost::system::error_code ec, std::size_t length)
 		{
 			if (!ec)
-			{
-				//std::string str_data(data_read, length);
-
+			{				
 				std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
-
-				//if (str_data.compare("shutdown") == 0) {
+				
 				if ( strcmp(data_read, "shutdown") == 0) {
 					std::cout << "Shutdown !" << std::endl;
 					shutdown_flag = true;

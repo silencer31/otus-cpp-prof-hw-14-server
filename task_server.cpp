@@ -17,7 +17,7 @@ void TaskServer::do_accept()
 			{
 				// Создаем клиентскую сессию и запускаем прием данных.
 				//std::make_shared<ClientSession>(std::move(socket))->start();
-				session_ptr s_ptr = std::make_shared<ClientSession>(std::move(socket), session_number);
+				session_ptr s_ptr = std::make_shared<ClientSession>(std::move(socket), session_number, data_storage);
 				s_ptr->set_server(this);
 
 				sessions.insert(std::pair{ session_number, s_ptr });
