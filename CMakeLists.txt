@@ -48,6 +48,10 @@ target_link_libraries(task_server PRIVATE
     lib_task_server
 )
 
+target_link_libraries(db_creator PRIVATE
+	${Boost_LIBRARIES}
+)
+
 if (MSVC)
     target_compile_options(task_server PRIVATE
         /W4
