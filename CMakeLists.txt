@@ -5,7 +5,7 @@ set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 
 project(task_server VERSION ${PROJECT_VERSION})
 
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS REQUIRED system filesystem)
 find_package(Threads)
 
 # see https://www.sqlite.org/howtocompile.html
@@ -18,6 +18,8 @@ endif()
 
 include_directories(${Boost_INCLUDE_DIR})
 
+add_definitions(-DBOOST_ALL_NO_LIB) # Without this string boost filesystem will not compile. 
+
 configure_file(version.h.in version.h)
 
 #Main target 
@@ -26,7 +28,7 @@ add_executable(db_creator db_creator.cpp  "${sqlite3_SOURCE_DIR}/sqlite3.c")
 add_library(lib_task_server lib.cpp)
 
 set_target_properties(task_server db_creator lib_task_server PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
 )
 
@@ -75,6 +77,7 @@ else ()
 endif()
 
 install(TARGETS task_server RUNTIME DESTINATION bin)
+install(TARGETS db_creator RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
