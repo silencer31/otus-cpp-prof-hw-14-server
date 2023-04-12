@@ -16,6 +16,8 @@ if (NOT sqlite3_POPULATED)
   FetchContent_Populate(sqlite3)
 endif()
 
+
+
 include_directories(${Boost_INCLUDE_DIR})
 
 add_definitions(-DBOOST_ALL_NO_LIB) # Without this string boost filesystem will not compile. 
@@ -24,7 +26,7 @@ configure_file(version.h.in version.h)
 
 #Main target 
 add_executable(task_server main.cpp client_session.cpp task_server.cpp data_storage.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
-add_executable(db_creator db_creator.cpp  "${sqlite3_SOURCE_DIR}/sqlite3.c")
+add_executable(db_creator db_creator.cpp sql_execute_functions.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
 add_library(lib_task_server lib.cpp)
 
 set_target_properties(task_server db_creator lib_task_server PROPERTIES

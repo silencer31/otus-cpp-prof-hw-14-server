@@ -1,12 +1,11 @@
-#include <iostream>
-
-#include "sqlite3.h"
-
 #include <boost/filesystem/operations.hpp>
 
 #include "sql_create_requests.h"
 #include "sql_insert_requests.h"
 #include "sql_select_requests.h"
+#include "sql_execute_functions.h"
+
+#include <iostream>
 
 #ifdef WIN32
 #define appname "db_creator.exe"
@@ -14,20 +13,6 @@
 #define appname "./db_creator"
 #endif
 
-bool execute_db_request(sqlite3* handle, const char* request)
-{
-    auto exec_callback = [](void*, int, char**, char**) -> int {
-        /*for (int i = 0; i < columns; ++i) {
-            std::cout << names[i] << " = " << (data[i] ? data[i] : "NULL") << std::endl;
-        }
-
-        std::cout << std::endl;*/
-
-        return 0;
-    };
-
-    sqlite3_free(errmsg);
-}
 
 int main(int argc, char* argv[])
 {
@@ -63,144 +48,74 @@ int main(int argc, char* argv[])
         std::cout << "Unexpected error with database handle!" << std::endl;
         return 1;
     }
-
-    char* errmsg = nullptr;
-
-    // Callback функция для sqlite3_exec.
-    // В рамках данной программы нам от неё каких-либо действий не требуется.
-    //auto exec_callback = [](void*, int columns, char** data, char** names) -> int {
-    auto exec_callback = [](void*, int , char** , char** ) -> int {
-        /*for (int i = 0; i < columns; ++i) {
-            std::cout << names[i] << " = " << (data[i] ? data[i] : "NULL") << std::endl;
-        }
-
-        std::cout << std::endl;*/
-
-        return 0;
-    };
-        
-
-    int result = SQLITE_OK;
+ 
+    execute_simple_request(handle, "PRAGMA foreign_keys = ON");
 
 
-    // 1 table - UserTypes
-    // Эта таблица содержит названия типов пользователей.
+    // - 1 - Создание таблицы UserTypes
+    // Эта таблица содержит названия типов пользователей и её данные не меняются во время работы сервера.
     // Первый столбец - число-ключ. Второй столбец - текстовое описание типа пользователя.
-    // Данные этой таблицы не меняются во время работы сервера.
-    result = sqlite3_exec(handle, create_user_types, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table UserTypes successfully created" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while creation of DB table UserTypes! Error code: " << result << std::endl;
+    if (false == execute_request(handle, create_user_types, "UserTypes", true)) {
         sqlite3_close(handle);
         return 1;
     }
 
     // Добавление постоянных значений в таблицу UserTypes
-    result = sqlite3_exec(handle, insert_into_user_types, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table UserTypes successfully updated\n" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while updation of DB table TaskStatusTypes! Error code: " << result << std::endl;
+    if (false == execute_request(handle, insert_into_user_types, "UserTypes", false)) {
         sqlite3_close(handle);
         return 1;
     }
-
-    
-
-    // 2 table - Users
+        
+    // - 2 - Создание таблицы Users
     // Данная таблица содержит всех пользователей, имеющих доступ к базе данных.
     // Изменять данную таблицу может только администратор.
     // Первый столбец - уникальный идентификатор пользователя. Используется в таблице Security.
     // Второй столбец - логин, который также должен быть уникален.
     // Третий столбец - имя, четвертый - фамилия, пятый - отчество.
-     result = sqlite3_exec(handle, create_users, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Users successfully created" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while creation of DB table Users! Error code: " << result << std::endl;
+    if (false == execute_request(handle, create_users, "Users", true)) {
         sqlite3_close(handle);
         return 1;
     }
 
     // Добавим в таблицу Users администратора, оператора базы данных и пользователя.
-    result = sqlite3_exec(handle, insert_into_users, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Users successfully updated\n" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while updation of DB table Users! Error code: " << result << std::endl;
+    if (false == execute_request(handle, insert_into_users, "Users", false)) {
         sqlite3_close(handle);
         return 1;
     }
-
-    
-
-    // 3 table - Security
+   
+    // - 3 - Создание таблицы Security
     // Данная таблица отвечает за безопасность доступа к данным и может быть изменена только администратором.
     // Используется при проверке пар логин/пароль и для получения типа пользователя для дальнейшей проверки его прав.
     // Первый столбец - уникальный идентификатор пользователя.
     // Второй столбец - число, соответствующее типу пользователя из таблицы UserTypes.
     // Третий столбец - пароль.
-    result = sqlite3_exec(handle, create_security, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Security successfully created" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while creation of DB table Security! Error code: " << result << std::endl;
+    if (false == execute_request(handle, create_security, "Security", true)) {
         sqlite3_close(handle);
         return 1;
     }
     
     // Обновим таблицу Security для трёх добавленных пользователей.
-    result = sqlite3_exec(handle, insert_into_security, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Security successfully updated\n" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while updation of DB table Security! Error code: " << result << std::endl;
+    if (false == execute_request(handle, insert_into_security, "Security", false)) {
         sqlite3_close(handle);
         return 1;
     }
 
-    // 4 table - TaskStatuses
-    // Эта таблица содержит описание каждого из возможных состояний задачи.
+    // - 4 - Создание таблицы TaskStatuses
+    // Эта таблица содержит описание каждого из возможных состояний задачи и её данные не меняются во время работы сервера.
     // Первый столбец - число-ключ. Второй столбец - текстовое описание состояния.
-    // Данные этой таблицы не меняются во время работы сервера.
-    result = sqlite3_exec(handle, create_task_statuses, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table TaskStatuses successfully created" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while creation of DB table TaskStatuses! Error code: " << result << std::endl;
+    if (false == execute_request(handle, create_task_statuses, "TaskStatuses", true)) {
         sqlite3_close(handle);
         return 1;
     }
 
     // Добавление постоянных значений в таблицу TaskStatuses.
-    result = sqlite3_exec(handle, insert_into_tss, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table TaskStatuses successfully updated\n" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while updation of DB table TaskStatusTypes! Error code: " << result << std::endl;
+    if (false == execute_request(handle, insert_into_task_statuses, "TaskStatuses", false)) {
         sqlite3_close(handle);
         return 1;
     }
 
 
-    // 5 table - Tasks
+    // - 5 - Создание таблицы Tasks
     // Последняя таблица содержит задачи и их связи с пользователями.
     // Первый столбец - уникальный идентификатор задачи.
     // Второй столбец - название задачи.
@@ -208,13 +123,7 @@ int main(int argc, char* argv[])
     // Четвертый столбец - уникальный идентификатор пользователя.
     // Пятый столбец - число-идентификатор состояния задачи из таблицы TaskStatuses.
     // Последний столбец - крайний срок выполнения.
-    result = sqlite3_exec(handle, create_tasks, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Tasks successfully created" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while creation of DB table Tasks! Error code: " << result << std::endl;
+    if (false == execute_request(handle, create_tasks, "Tasks", true)) {
         sqlite3_close(handle);
         return 1;
     }
@@ -223,17 +132,37 @@ int main(int argc, char* argv[])
     // Задача для администратора - создать ещё одного оператора БД.
     // Задача для оператора базы данных - сделать резервную копию базы.
     // И две офисных задачи для пользователя.
-    result = sqlite3_exec(handle, insert_into_tasks, exec_callback, 0, &errmsg);
-
-    if (result == SQLITE_OK) {
-        std::cout << "DB table Tasks successfully updated" << std::endl;
-    }
-    else {
-        std::cout << "An error occured while updation of DB table Tasks! Error code: " << result << std::endl;
+    if (false == execute_request(handle, insert_into_tasks, "Tasks", false)) {
         sqlite3_close(handle);
         return 1;
     }
 
+    std::cout << std::endl;
+
+    // Вывод на экран содержимого созданных таблиц.
+    
+
+    // Содержимое таблицы UserTypes
+    execute_request_output_columns(handle, "PRAGMA table_info(UserTypes)", "UserTypes");
+    execute_request_output_data(handle, select_from_user_types, "UserTypes");
+
+    // Содержимое таблицы Users
+    execute_request_output_columns(handle, "PRAGMA table_info(Users)", "Users");
+    execute_request_output_data(handle, select_from_users, "Users");
+
+    // Содержимое таблицы Security
+    execute_request_output_columns(handle, "PRAGMA table_info(Security)", "Security");
+    execute_request_output_data(handle, select_from_security, "Security");
+
+    // Содержимое таблицы TaskStatuses
+    execute_request_output_columns(handle, "PRAGMA table_info(TaskStatuses)", "TaskStatuses");
+    execute_request_output_data(handle, select_from_task_statuses, "TaskStatuses");
+
+    // Содержимое таблицы Tasks
+    execute_request_output_columns(handle, "PRAGMA table_info(Tasks)", "Tasks");
+    execute_request_output_data(handle, select_from_tasks, "Tasks");
+
+    // Закрытие таблицы.
     sqlite3_close(handle);
 
 
