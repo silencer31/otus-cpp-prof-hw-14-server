@@ -11,13 +11,21 @@ void TaskServer::do_accept()
 				return;
 			}
 
+			std::cout << "\n -- connection rejected" << std::endl;
+
+			// Проверяем, сколько активных сессий уже ведётся
+			if (sessions.size() == SESSIONS_MAX_NUMBER) {
+				do_accept(); // Переключаемся на ожидание следующего соединения.
+				return;
+			}
+
 			std::cout << "\n -- connection accepted" << std::endl;
 
 			if (!ec)
 			{
 				// Создаем клиентскую сессию и запускаем прием данных.
 				//std::make_shared<ClientSession>(std::move(socket))->start();
-				session_ptr s_ptr = std::make_shared<ClientSession>(std::move(socket), session_number, data_storage);
+				session_ptr s_ptr = std::make_shared<ClientSession>(std::move(socket), session_number, data_storage_ptr);
 				s_ptr->set_server(this);
 
 				sessions.insert(std::pair{ session_number, s_ptr });
@@ -29,8 +37,7 @@ void TaskServer::do_accept()
 				s_ptr->start();
 			}
 
-			// Переключаемся на ожидание следующего соединения.
-			do_accept();
+			do_accept(); // Переключаемся на ожидание следующего соединения.
 		}
 	);
 
@@ -44,9 +51,10 @@ void TaskServer::exit_received(int session_id)
 	
 	shutdown_flag = true;
 
+	// В цикле завершаем все сессии.
 	for (const auto& [key, value] : sessions) {
 		//value->shutdown();
-		if (key != session_id) {
+		if (key != session_id) { // Пропускаем сессию, от которой пришел сигнал на завершение.
 			value->shutdown();
 		}
 	}

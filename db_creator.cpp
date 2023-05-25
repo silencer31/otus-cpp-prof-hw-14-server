@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 {
     // Нужно указать имя файла новой базы данных.
     if (argc != 2) {
-        std::cout << "Usage: " << appname << " data_base_file_name" << std::endl;
+        std::cout << "Usage: " << appname << " <data base file name>" << std::endl;
         return 1;
     }
 
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     sqlite3* handle = nullptr;
      
-    // Создание файл с базой данных.
+    // Создание файла с базой данных.
     if (SQLITE_ERROR == sqlite3_open_v2(db_name.c_str(), &handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL)) {
         std::cout << "Database creation error!" << std::endl;
         return 1;
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
     execute_request_output_columns(handle, "PRAGMA table_info(Tasks)", "Tasks");
     execute_request_output_data(handle, select_from_tasks, "Tasks");
 
-    // Закрытие таблицы.
+    // Закрытие базы данных.
     sqlite3_close(handle);
 
 

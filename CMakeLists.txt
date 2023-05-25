@@ -12,11 +12,13 @@ find_package(Threads)
 include(FetchContent)
 FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202205041843.tar.gz")
 FetchContent_MakeAvailable(sqlite3)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 if (NOT sqlite3_POPULATED)
   FetchContent_Populate(sqlite3)
 endif()
-
-
 
 include_directories(${Boost_INCLUDE_DIR})
 
@@ -35,7 +37,7 @@ set_target_properties(task_server db_creator lib_task_server PROPERTIES
 )
 
 target_include_directories(task_server 
-	PUBLIC "${sqlite3_SOURCE_DIR}"
+	PUBLIC "${sqlite3_SOURCE_DIR}"	
 )
 
 target_include_directories(db_creator 
@@ -48,6 +50,7 @@ target_include_directories(lib_task_server
 
 target_link_libraries(task_server PRIVATE
 	${Boost_LIBRARIES}
+	nlohmann_json::nlohmann_json
     ${CMAKE_THREAD_LIBS_INIT}
     lib_task_server
 )

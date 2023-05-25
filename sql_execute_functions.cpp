@@ -1,5 +1,7 @@
 #include "sql_execute_functions.h"
 
+#define COLUMN_WIDTH 28
+
 #include <iostream>
 
 void execute_request_output_columns(sqlite3* handle, const char* request, const char* table_name)
@@ -16,7 +18,7 @@ void execute_request_output_columns(sqlite3* handle, const char* request, const 
             }
         }
 
-        for (size_t x = len; x < 28; ++x) {
+        for (size_t x = len; x < COLUMN_WIDTH; ++x) {
             std::cout << " ";
         }
 
@@ -40,7 +42,7 @@ void execute_request_output_data(sqlite3* handle, const char* request, const cha
         for (int i = 0; i < columns; ++i) {
             std::cout << (data[i] ? data[i] : "NULL");
 
-            for (size_t x = strlen(data[i] ? data[i] : "NULL"); x < 28; ++x) {
+            for (size_t x = strlen(data[i] ? data[i] : "NULL"); x < COLUMN_WIDTH; ++x) {
                 std::cout << " ";
             }
         }

@@ -7,22 +7,33 @@
 class DataStorage
 {
 public:
-	DataStorage() : 
-		handle(nullptr)
-	{}
+	DataStorage() = delete;
+
+	explicit DataStorage(const char* file_path) :
+		handle(nullptr),
+		db_path(file_path),
+		base_opened(false)
+	{
+		base_opened = init_database();
+	}
 	
 	~DataStorage() {
-		sqlite3_close(handle);
+		if (base_opened) {
+			sqlite3_close(handle);
+		}
 	}
 
+	// Открытие файла с базой данных.
 	bool init_database();
 
+	// Обработка запроса к базе данных.
 	bool handle_request(const std::string& request);
 
 private:
 	sqlite3* handle;
+	const char* db_path; // Путь к файлу с базой данных.
 
-	std::mutex data_mutex;
+	bool base_opened; // Флаг успешного открытия базы данных.
 
-	const char* db_name = "tasks_sqlite_db.sqlite";
+	std::mutex data_mutex; // Для защиты базы данных при параллельном доступе.	
 };

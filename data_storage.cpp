@@ -5,14 +5,14 @@
 bool DataStorage::init_database()
 {
 
-    if (sqlite3_open(db_name, &handle))
+    if (sqlite3_open(db_path, &handle))
     {
         std::cerr << "Can't open database: " << sqlite3_errmsg(handle) << std::endl;
         sqlite3_close(handle);
         return false;
     }
 
-    std::cout << db_name << " database opened successfully!" << std::endl;
+    std::cout << db_path << " database opened successfully!" << std::endl;
 
     return true;
 }
