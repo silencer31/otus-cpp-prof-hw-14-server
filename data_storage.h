@@ -37,3 +37,5 @@ private:
 
 	std::mutex data_mutex; // ƒл€ защиты базы данных при параллельном доступе.	
 };
+
+using storage_shared = std::shared_ptr<DataStorage>;

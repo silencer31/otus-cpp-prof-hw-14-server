@@ -9,18 +9,25 @@
 
 #include "data_storage.h"
 
-using storage_ptr = std::shared_ptr<DataStorage>;
-
 using boost::asio::ip::tcp;
 
 class TaskServer;
+
+using task_server_shared = std::shared_ptr<TaskServer>;
 
 class ClientSession : public std::enable_shared_from_this<ClientSession>
 {
 public:
 	
-	ClientSession(tcp::socket socket, int s_id, const storage_ptr dstp)
-		: socket_(std::move(socket)), session_id(s_id), data_storage_ptr(dstp), shutdown_flag(false)
+	ClientSession(
+		const task_server_shared& ts_ptr,
+		const storage_shared& dstp,
+		tcp::socket socket, int s_id)
+		: socket_(std::move(socket))
+		, session_id(s_id)
+		, task_server_ptr(ts_ptr)
+		, data_storage_ptr(dstp)
+		, shutdown_flag(false)
 	{}
 
 	~ClientSession() {
@@ -31,8 +38,6 @@ public:
 		clear_data_read();
 		do_read();
 	}
-
-	void set_server(TaskServer* ts_ptr);
 
 	void shutdown(); // Выключение сессии.
 
@@ -55,10 +60,10 @@ private: // data
 	tcp::socket socket_;
 	int session_id;
 
-	const storage_ptr data_storage_ptr; // Для связи с хранилищем данных.
+	const task_server_shared task_server_ptr; // Для связи с сервером, создавшим данную сессию.
 
-	TaskServer *task_server_ptr; // Для связи с сервером, создавшим данную сессию.
-
+	const storage_shared data_storage_ptr; // Для связи с хранилищем данных.
+	
 	enum { max_length = 1024 };
 
 	char data_read[max_length]; // Для получения данных из сети.

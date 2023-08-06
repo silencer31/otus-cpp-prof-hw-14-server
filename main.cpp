@@ -46,9 +46,11 @@ int main(int argc, char* argv[])
         ba::io_context io_context;
         
         // Создание сервера с одновременным созданием хранилища данных.
-        TaskServer task_server(io_context, 
-            static_cast<unsigned short>( port ), 
-            std::make_shared<DataStorage>( db_name.c_str() ));
+        std::shared_ptr<TaskServer> task_server_ptr = std::make_shared<TaskServer>(
+            io_context,
+            static_cast<unsigned short>(port), 
+            std::make_shared<DataStorage>(db_name.c_str())
+        );
 
         std::cout << "___ io run ___ waiting" << std::endl;
         io_context.run();

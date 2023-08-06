@@ -8,11 +8,6 @@
 using json = nlohmann::json;
 using namespace nlohmann::literals;
 
-void ClientSession::set_server(TaskServer* ts_ptr)
-{
-	task_server_ptr = ts_ptr;
-}
-
 void ClientSession::report_exit_received()
 {
 	task_server_ptr->exit_received(session_id);
