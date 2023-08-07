@@ -19,47 +19,51 @@ void ClientSession::do_read()
 
 	socket_.async_read_some( // У сокета вызываем async_read_some
 		boost::asio::buffer(data_read, max_length),
-		[this, self](boost::system::error_code ec, std::size_t length)
+		[this, self](boost::system::error_code errcode, std::size_t length)
 		{
-			if (!ec)
-			{				
-				std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
-				
-				// Преобразуем char строку в json object
-				json jdata = json::parse(data_read);
-
-				// Подготовка ответа
-				json reply = R"( { "reply" : "ack" })"_json;
-				// или так
-				json reply_new;
-				reply_new["reply"] = "ack";
-				
-				if (jdata.is_null()) {
-
-				}
-
-				if (jdata.is_object()) {
-
-				}
-
-				if (jdata.contains("request")) {
-					
-				}
-
-				// Определяем тип команды/запроса.
-
-				if ( strcmp(data_read, "shutdown") == 0) {
-					std::cout << "Shutdown command received!" << std::endl;
-					shutdown_flag = true;
-					report_exit_received(); // Сообщаем серверу о необходимости завершения работы.
-				}
-
-				// Преобразуем json в строку для отправки.
-				std::string answer = reply.dump();
-				prepare_data_send(answer);
-				
-				do_write( answer.length() );
+			if (errcode) {
+				std::cout << " Session: " << session_id << ". Read data boost system error code: " << errcode.message() << std::endl;
+				clear_data_read();
+				do_read();
+				return;
 			}
+					
+			std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
+				
+			// Преобразуем char строку в json object
+			json jdata = json::parse(data_read);
+
+			// Подготовка ответа
+			json reply = R"( { "reply" : "ack" })"_json;
+			// или так
+			json reply_new;
+			reply_new["reply"] = "ack";
+				
+			if (jdata.is_null()) {
+
+			}
+
+			if (jdata.is_object()) {
+
+			}
+
+			if (jdata.contains("request")) {
+					
+			}
+
+			// Определяем тип команды/запроса.
+
+			if ( strcmp(data_read, "shutdown") == 0) {
+				std::cout << "Shutdown command received!" << std::endl;
+				shutdown_flag = true;
+				report_exit_received(); // Сообщаем серверу о необходимости завершения работы.
+			}
+
+			// Преобразуем json в строку для отправки.
+			std::string answer = reply.dump();
+			prepare_data_send(answer);
+				
+			do_write( answer.length() );
 		}
 	);
 }
@@ -70,16 +74,18 @@ void ClientSession::do_write(std::size_t length)
 
 	boost::asio::async_write( // Вызываем async_write, указывая сокет
 		socket_, boost::asio::buffer(data_send, length),
-		[this, self](boost::system::error_code ec, std::size_t /*length*/)
+		[this, self](boost::system::error_code errcode, std::size_t /*length*/)
 		{
 			if (shutdown_flag) { // Если получена команда на выключение, больше не пытаемся читать из сети.
 				return;
 			}
 
-			if (!ec) {
-				clear_data_read();
-				do_read();
+			if (errcode) {
+				std::cout << " Session: " << session_id << ". Write data boost system error: " << errcode.message() << std::endl;
 			}
+			
+			clear_data_read();
+			do_read();
 		}
 	);
 }

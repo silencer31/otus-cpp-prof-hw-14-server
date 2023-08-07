@@ -71,3 +71,5 @@ private: // data
 
 	bool shutdown_flag; // ‘лаг, что нужно завершать сессию и работу сервера.
 };
+
+using session_shared = std::shared_ptr<ClientSession>;

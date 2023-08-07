@@ -5,8 +5,8 @@
 #define SESSIONS_MAX_NUMBER 5
 
 using boost::asio::ip::tcp;
-using session_ptr = std::shared_ptr<ClientSession>;
-using session_map = std::map<int, session_ptr>;
+
+using session_map = std::map<int, session_shared>;
 
 
 class TaskServer : public std::enable_shared_from_this<TaskServer>

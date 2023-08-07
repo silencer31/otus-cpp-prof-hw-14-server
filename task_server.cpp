@@ -5,64 +5,68 @@
 void TaskServer::do_accept()
 {
 	acceptor_.async_accept( // Если будет входящее соединение, выполнить следующую функцию.
-		[this](boost::system::error_code ec, tcp::socket socket)
+		[this](boost::system::error_code errcode, tcp::socket socket)
 		{
 			if (shutdown_flag) {
+				std::cout << "\n -- connection rejected. Server is shutting down!" << std::endl;
 				return;
 			}
 
-			std::cout << "\n -- connection rejected" << std::endl;
-
 			// Проверяем, сколько активных сессий уже ведётся
 			if (sessions.size() == SESSIONS_MAX_NUMBER) {
+				std::cout << "\n -- connection rejected. Too many sessions!" << std::endl;
+				do_accept(); // Переключаемся на ожидание следующего соединения.
+				return;
+			}
+
+			// Смотрим была ли ошибка boost.
+			if (errcode) {
+				std::cout << "\n -- connection rejected. Boost system error: " << errcode.message() << std::endl;
 				do_accept(); // Переключаемся на ожидание следующего соединения.
 				return;
 			}
 
 			std::cout << "\n -- connection accepted" << std::endl;
+			
+			// Создаем клиентскую сессию и запускаем прием данных.
+			session_shared session_ptr = std::make_shared<ClientSession>(
+				shared_from_this(),
+				data_storage_ptr,
+				std::move(socket),
+				session_number // Каждая сессия знает свой номер.
+			);
 
-			if (!ec)
-			{
-				// Создаем клиентскую сессию и запускаем прием данных.
-				//std::make_shared<ClientSession>(std::move(socket))->start();
-				session_ptr s_ptr = std::make_shared<ClientSession>(
-					shared_from_this(),
-					data_storage_ptr,
-					std::move(socket),
-					session_number
-				);
-
-				sessions.insert(std::pair{ session_number, s_ptr });
+			// Добавляем новую сессию в коллекцию сессий сервера.
+			sessions.insert(std::pair{ session_number, session_ptr });
 				
-				session_number++;
+			session_number++;
 
-				//std::cout << "sessions number: " << sessions.size() << std::endl;
-
-				s_ptr->start();
-			}
-
-			do_accept(); // Переключаемся на ожидание следующего соединения.
+			// Начало работы сессии.
+			session_ptr->start();
+			
+			// Переключаемся на ожидание следующего соединения.
+			do_accept();
 		}
 	);
 
-	std::cout << "\nwait new acception" << std::endl;
+	std::cout << "\nwaiting for new connection" << std::endl;
 }
 
 // Получена команда на выключение сервера.
 void TaskServer::exit_received(int session_id)
 {
-	std::cout << "Server. Exit received " << session_id  << std::endl;
+	std::cout << "Server. Exit request received from session: " << session_id  << std::endl;
 	
 	shutdown_flag = true;
 
 	// В цикле завершаем все сессии.
-	for (const auto& [key, value] : sessions) {
-		//value->shutdown();
-		if (key != session_id) { // Пропускаем сессию, от которой пришел сигнал на завершение.
-			value->shutdown();
+	for (const auto& [id, session_ptr] : sessions) {
+		if (id != session_id) { // Пропускаем сессию, от которой пришел сигнал на завершение.
+			session_ptr->shutdown();
 		}
 	}
 
+	// Отключаем прием новых соединений.
 	acceptor_.cancel();
 	//acceptor_.close();
 }
