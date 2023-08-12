@@ -3,11 +3,6 @@
 
 #include <iostream>
 
-void ClientSession::report_exit_received()
-{
-	task_server_ptr->exit_received(session_id);
-}
-
 void ClientSession::do_read()
 {
 	auto self(shared_from_this());
@@ -46,6 +41,7 @@ void ClientSession::do_read()
 				return;
 			}
 			
+			// Обработка запроса в виде json.
 			handle_request(jdata);
 		}
 	);

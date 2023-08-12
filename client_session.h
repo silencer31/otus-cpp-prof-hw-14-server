@@ -10,6 +10,7 @@
 #include "nlohmann/json.hpp"
 #include "data_storage.h"
 
+
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 using namespace nlohmann::literals;
@@ -68,9 +69,6 @@ private: // methods
 	
 	void do_write(const std::string& answer);
 
-	// Сообщить серверу о получении команды exit.
-	void report_exit_received();
-
 	// Очистка буфера для приема данных по сети.
 	void clear_data_read();
 
@@ -80,11 +78,14 @@ private: // methods
 	// Обработка запроса от клиента.
 	void handle_request(const json& jdata);
 
+	// Обработка запроса на выключение сервера.
+	void handle_shutdown();
+
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError req_error);
 
 	// Ответ клиенту на запрос.
-	void reply_request(CommandType req_type);
+	void reply_request(CommandType command_type);
 
 private: // data
 	tcp::socket socket_;

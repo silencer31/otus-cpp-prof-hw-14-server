@@ -1,4 +1,7 @@
 #include "client_session.h"
+#include "task_server.h"
+
+#include <iostream>
 
 // Сообщить клиенту об ошибке в запросе.
 void ClientSession::reply_error(RequestError req_error)
@@ -8,19 +11,19 @@ void ClientSession::reply_error(RequestError req_error)
 
 	switch (req_error) {
 	case RequestError::ParseError:
-		reply["type"] = "json parse error";
+		reply["info"] = "json parse error";
 		break;
-	case RequestError::ParseError:
-		reply["type"] = "json data is null";
+	case RequestError::IsNull:
+		reply["info"] = "json data is null";
 		break;
 	case RequestError::UnknownCommand:
-		reply["type"] = "unknown command";
+		reply["info"] = "unknown command";
 		break;
 	case RequestError::BadParameters:
-		reply["type"] = "bad parameters";
+		reply["info"] = "bad parameters";
 		break;
 	default:
-		reply["type"] = "unknown error";
+		reply["info"] = "unknown error";
 		break;
 	}
 
@@ -29,13 +32,35 @@ void ClientSession::reply_error(RequestError req_error)
 }
 
 // Ответ клиенту на запрос.
-void ClientSession::reply_request(CommandType req_type)
+void ClientSession::reply_request(CommandType command_type)
 {
 	// Подготовка ответа.
-	json reply = R"( { "reply" : "ack" })"_json;
+	//json reply = R"( { "reply" : "ack" })"_json;
 	// или так
-	json reply_new;
-	reply_new["reply"] = "ack";
+	json reply;
+	reply["reply"] = "reply";
+
+	switch (command_type) {
+	case CommandType::Unknown:
+		break;
+	case CommandType::Test:
+		reply["command"] = "test";
+		reply["result"] = "ack";
+		break;
+	case CommandType::Shutdown:
+		reply["command"] = "shutdown";
+		reply["result"] = "ack";
+		break;
+	case CommandType::Login:
+		break;
+	case CommandType::GetData:
+		break;
+	case CommandType::EditData:
+		break;
+	default:
+		break;
+
+	}
 
 	// Отправляем json в виде строки.
 	do_write( reply.dump() );
