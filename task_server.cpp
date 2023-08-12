@@ -2,6 +2,21 @@
 
 #include <iostream>
 
+TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port, const storage_shared& dstp)
+	: acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
+	, data_storage_ptr(dstp)
+	, session_number(0)
+	, shutdown_flag(false)
+{
+	commands["test"] = CommandType::Test;
+	commands["shutdown"] = CommandType::Shutdown;
+	commands["login"] = CommandType::Login;
+	commands["getdata"] = CommandType::GetData;
+	commands["editdata"] = CommandType::EditData;
+
+	do_accept();
+}
+
 void TaskServer::do_accept()
 {
 	acceptor_.async_accept( // Если будет входящее соединение, выполнить следующую функцию.

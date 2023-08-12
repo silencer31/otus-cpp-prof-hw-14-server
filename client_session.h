@@ -7,9 +7,30 @@
 #include <memory>
 #include <map>
 
+#include "nlohmann/json.hpp"
 #include "data_storage.h"
 
 using boost::asio::ip::tcp;
+using json = nlohmann::json;
+using namespace nlohmann::literals;
+
+// Виды ошибок обработки запроса от клиента.
+enum class RequestError {
+	ParseError,
+	IsNull,
+	UnknownCommand,
+	BadParameters
+};
+
+// Виды команд от клиента.
+enum class CommandType {
+	Unknown,  // Неизвестный серверу тип команды.
+	Test,     // Тестовый запрос для проверки связи.
+	Shutdown, // Запрос на выключение сервера.
+	Login,
+	GetData,
+	EditData
+};
 
 class TaskServer;
 
@@ -45,7 +66,7 @@ private: // methods
 
 	void do_read();
 	
-	void do_write(std::size_t length);
+	void do_write(const std::string& answer);
 
 	// Сообщить серверу о получении команды exit.
 	void report_exit_received();
@@ -55,6 +76,15 @@ private: // methods
 
 	// Подготовка данных для отправки по сети.
 	void prepare_data_send(const std::string& data);
+
+	// Обработка запроса от клиента.
+	void handle_request(const json& jdata);
+
+	// Сообщить клиенту об ошибке в запросе.
+	void reply_error(RequestError req_error);
+
+	// Ответ клиенту на запрос.
+	void reply_request(CommandType req_type);
 
 private: // data
 	tcp::socket socket_;
