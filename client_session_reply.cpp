@@ -32,26 +32,26 @@ void ClientSession::reply_error(RequestError req_error)
 }
 
 // Ответ клиенту на запрос.
-void ClientSession::reply_request(CommandType command_type)
+void ClientSession::reply_request(CommandType command_type, bool result)
 {
 	// Подготовка ответа.
 	//json reply = R"( { "reply" : "ack" })"_json;
 	// или так
 	json reply;
 	reply["reply"] = "reply";
+	reply["result"] = result;
 
 	switch (command_type) {
 	case CommandType::Unknown:
 		break;
 	case CommandType::Test:
 		reply["command"] = "test";
-		reply["result"] = "ack";
 		break;
 	case CommandType::Shutdown:
 		reply["command"] = "shutdown";
-		reply["result"] = "ack";
 		break;
 	case CommandType::Login:
+		reply["command"] = "login";
 		break;
 	case CommandType::GetData:
 		break;

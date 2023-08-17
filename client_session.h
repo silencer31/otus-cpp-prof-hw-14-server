@@ -81,11 +81,14 @@ private: // methods
 	// Обработка запроса на выключение сервера.
 	void handle_shutdown();
 
+	// Обработка запроса проверки пары логин/пароль.
+	void handle_login(const std::string& username, const std::string& password);
+
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError req_error);
 
 	// Ответ клиенту на запрос.
-	void reply_request(CommandType command_type);
+	void reply_request(CommandType command_type, bool result);
 
 private: // data
 	tcp::socket socket_;

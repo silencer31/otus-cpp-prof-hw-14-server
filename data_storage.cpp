@@ -46,3 +46,13 @@ bool DataStorage::handle_request(const std::string& request)
 
     return true;
 }
+
+// Проверка пары логин/пароль.
+bool DataStorage::check_login(const std::string& username, const std::string& password)
+{
+    if (username.empty() || password.empty()) {
+        return false;
+    }
+
+    return true;
+}
