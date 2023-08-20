@@ -34,6 +34,26 @@ public:
 	// Обработка запроса к базе данных.
 	bool handle_request(const std::string& request);
 
+	// Получить значение-число из определённой ячейки в таблице.
+	bool get_row_value_int(const std::string& table, const std::string& col, const int row,
+		int& value);
+
+	// Получить значение-текст из определённой ячейки в таблице.
+	bool get_row_value_txt(const std::string& table, const std::string& col, const int row,
+		std::string& value);
+
+	// Ищем строку, содержащую переданное значение в указанном столбце.
+	// Если находим, возвращаем значение-число из той же строки, но из второго указанного столбца.
+	bool get_corresp_col_value_int(const std::string& table,
+		const std::string& find_col, const std::string& target_col,
+		const std::string& find_value, int& get_value);
+
+	// Ищем строку, содержащую переданное значение в указанном столбце.
+	// Если находим, возвращаем значение-текст из той же строки, но из второго указанного столбца.
+	bool get_corresp_col_value_txt(const std::string& table,
+		const std::string& find_col, const std::string& target_col,
+		const std::string& find_value, std::string& get_value);
+
 	// Проверка пары логин/пароль.
 	bool check_login(const std::string& username, const std::string& password);
 

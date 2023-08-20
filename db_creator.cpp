@@ -39,8 +39,8 @@ int main(int argc, char* argv[])
     sqlite3* handle = nullptr;
      
     // Создание файла с базой данных.
-    if (SQLITE_ERROR == sqlite3_open_v2(db_name.c_str(), &handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL)) {
-        std::cout << "Database creation error!" << std::endl;
+    if (SQLITE_OK != sqlite3_open_v2(db_name.c_str(), &handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL)) {
+        std::cout << "Database creation error! " << sqlite3_errmsg(handle) << std::endl;
         return 1;
     }
 

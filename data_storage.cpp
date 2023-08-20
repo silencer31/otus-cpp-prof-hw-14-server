@@ -1,11 +1,13 @@
 #include "data_storage.h"
 
+#include "sql_select_requests.h"
+
 #include <iostream>
 
 bool DataStorage::init_database()
 {
 
-    if (sqlite3_open(db_path, &handle))
+    if (SQLITE_OK != sqlite3_open_v2(db_path, &handle, SQLITE_OPEN_READWRITE, NULL))
     {
         std::cerr << "Can't open database: " << sqlite3_errmsg(handle) << std::endl;
         sqlite3_close(handle);
@@ -14,7 +16,9 @@ bool DataStorage::init_database()
 
     std::cout << db_path << " database opened successfully!" << std::endl;
 
-    return true;
+    bool res = check_login("user_test", "pass");
+
+    return res;
 }
 
 bool DataStorage::handle_request(const std::string& request)
@@ -34,8 +38,7 @@ bool DataStorage::handle_request(const std::string& request)
     data_mutex.lock();
     int rc = sqlite3_exec(handle, request.c_str(), exec_callback, 0, &errmsg);
     data_mutex.unlock();
-
-    
+        
     if (rc != SQLITE_OK)
     {
         std::cerr << "Can't execute query: " << errmsg << std::endl;
@@ -43,7 +46,6 @@ bool DataStorage::handle_request(const std::string& request)
         return false;
     }
     
-
     return true;
 }
 
@@ -54,5 +56,17 @@ bool DataStorage::check_login(const std::string& username, const std::string& pa
         return false;
     }
 
-    return true;
+    int value;
+
+
+    bool result = get_corresp_col_value_int("Users", "user_unique_login", "user_unique_id", "user_test", value);
+
+    if (result) {
+        std::cout << "res " << value << std::endl;
+    }
+    else {
+        std::cout << "err" << std::endl;
+    }
+
+    return result;
 }

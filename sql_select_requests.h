@@ -13,4 +13,7 @@ const char* select_from_task_statuses = "SELECT * FROM TaskStatuses";
 // Получение содержимого таблицы Tasks
 const char* select_from_tasks = "SELECT * FROM Tasks";
 
-// 
+// Получение содержимого столбца user_unique_login из таблицы Users
+const char* select_unique_login = "SELECT user_unique_id, user_unique_login FROM Users";
+
+
