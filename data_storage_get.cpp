@@ -6,7 +6,10 @@
 bool DataStorage::get_row_value_int(const std::string& table, const std::string& col, const int row,
     int& value)
 {
-    std::string request = "SELECT " + col + " FROM " + table;
+    const std::string request = "SELECT " + col + " FROM " + table;
+
+    int current_row = 0;
+    bool value_found = false;
 
     data_mutex.lock();
 
@@ -15,9 +18,6 @@ bool DataStorage::get_row_value_int(const std::string& table, const std::string&
         data_mutex.unlock();
         return false;
     }
-    
-    int current_row = 0;
-    bool value_found = false;
 
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (current_row == row) {
@@ -38,7 +38,9 @@ bool DataStorage::get_row_value_int(const std::string& table, const std::string&
 bool DataStorage::get_row_value_txt(const std::string& table, const std::string& col, const int row,
     std::string& value)
 {
-    std::string request = "SELECT " + col + " FROM " + table;
+    const std::string request = "SELECT " + col + " FROM " + table;
+    int current_row = 0;
+    bool value_found = false;
 
     data_mutex.lock();
 
@@ -47,9 +49,6 @@ bool DataStorage::get_row_value_txt(const std::string& table, const std::string&
         data_mutex.unlock();
         return false;
     }
-
-    int current_row = 0;
-    bool value_found = false;
 
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (current_row == row) {
@@ -72,7 +71,8 @@ bool DataStorage::get_corresp_col_value_int(const std::string& table,
     const std::string& find_col, const std::string& target_col,
     const std::string& find_value, int& get_value)
 {
-    std::string request = "SELECT " + find_col + ", " + target_col + " FROM " + table;
+    const std::string request = "SELECT " + find_col + ", " + target_col + " FROM " + table;
+    bool value_found = false;
 
     data_mutex.lock();
 
@@ -81,8 +81,6 @@ bool DataStorage::get_corresp_col_value_int(const std::string& table,
         data_mutex.unlock();
         return false;
     }
-    
-    bool value_found = false;
 
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
@@ -105,7 +103,7 @@ bool DataStorage::get_corresp_col_value_txt(const std::string& table,
     const std::string& find_col, const std::string& target_col,
     const std::string& find_value, std::string& get_value)
 {
-    std::string request = "SELECT " + find_col + ", " + target_col + " FROM " + table;
+    const std::string request = "SELECT " + find_col + ", " + target_col + " FROM " + table;
 
     data_mutex.lock();
 

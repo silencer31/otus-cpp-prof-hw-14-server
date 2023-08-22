@@ -54,6 +54,14 @@ public:
 		const std::string& find_col, const std::string& target_col,
 		const std::string& find_value, std::string& get_value);
 
+	// Обновить значение в столбце таблицы с соблюдением условия.
+	bool set_value_with_clause(const std::string& table,
+		const std::string& target_col, const std::string& new_value,
+		const std::string& clause_col, const std::string& clause_val);
+
+	// Добавить в таблицу новую строку со значениями.
+	bool insert_values(const std::string& table, const std::string& values);
+
 	// Проверка пары логин/пароль.
 	bool check_login(const std::string& username, const std::string& password);
 
