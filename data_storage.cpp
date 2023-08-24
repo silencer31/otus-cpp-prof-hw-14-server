@@ -49,6 +49,23 @@ bool DataStorage::handle_request(const std::string& request)
     return true;
 }
 
+// Выполнить запрос к базе данных с возвратом ошибки.
+bool DataStorage::execute_db_request(const std::string& request, char** err_ptr)
+{
+    auto exec_callback = [](void*, int, char**, char**) -> int {
+        return 0;
+    };    
+
+    data_mutex.lock();
+
+    int result = sqlite3_exec(handle, request.c_str(), exec_callback, 0, &(*err_ptr));
+    
+    data_mutex.unlock();
+
+    return (result == SQLITE_OK);
+}
+
+
 // Проверка пары логин/пароль.
 bool DataStorage::check_login(const std::string& username, const std::string& password)
 {

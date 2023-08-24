@@ -1,8 +1,11 @@
 #pragma once
 
 #include <mutex>
+#include <vector>
 
 #include "sqlite3.h"
+
+using vector_str = std::vector<std::string>;
 
 class DataStorage
 {
@@ -34,6 +37,9 @@ public:
 	// Обработка запроса к базе данных.
 	bool handle_request(const std::string& request);
 
+	// Выполнить запрос к базе данных с возвратом ошибки.
+	bool execute_db_request(const std::string& request, char** err_ptr);
+
 	// Получить значение-число из определённой ячейки в таблице.
 	bool get_row_value_int(const std::string& table, const std::string& col, const int row,
 		int& value);
@@ -59,8 +65,23 @@ public:
 		const std::string& target_col, const std::string& new_value,
 		const std::string& clause_col, const std::string& clause_val);
 
-	// Добавить в таблицу новую строку со значениями.
-	bool insert_values(const std::string& table, const std::string& values);
+	// Добавить в таблицу новую строку со значениями для всех столбцов.
+	bool insert_row(const std::string& table, const std::string& values);
+
+	// Добавить в таблицу несколько новых строк со значениями для всех столбцов.
+	bool insert_rows(const std::string& table, const vector_str& rows);
+
+	// Добавить в таблицу новую строку со значениями для указанных столбцов.
+	bool insert_row_for_columns(const std::string& table, const vector_str& columns, const std::string& values);
+
+	// Добавить в таблицу несколько новых строк со значениями для указанных столбцов.
+	bool insert_rows_for_columns(const std::string& table, const vector_str& columns, const vector_str& rows);
+
+	// Удалить из таблицы строку с указанием столбца и значения в нём.
+	bool delete_row(const std::string& table, const std::string& column, const std::string& value);
+
+	// Удалить из таблицы строки с указанием столбца и значений в нём.
+	bool delete_rows(const std::string& table, const std::string& column, const vector_str& values);
 
 	// Проверка пары логин/пароль.
 	bool check_login(const std::string& username, const std::string& password);

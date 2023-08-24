@@ -27,7 +27,7 @@ add_definitions(-DBOOST_ALL_NO_LIB) # Without this string boost filesystem will 
 configure_file(version.h.in version.h)
 
 #Main target 
-add_executable(task_server main.cpp client_session.cpp client_session_reply.cpp client_session_handle.cpp task_server.cpp data_storage.cpp data_storage_get.cpp data_storage_set.cpp data_storage_insert.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
+add_executable(task_server main.cpp client_session.cpp client_session_reply.cpp client_session_handle.cpp task_server.cpp data_storage.cpp data_storage_get.cpp data_storage_set.cpp data_storage_insert.cpp data_storage_delete.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
 add_executable(db_creator db_creator.cpp sql_execute_functions.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
 add_library(lib_task_server lib.cpp)
 

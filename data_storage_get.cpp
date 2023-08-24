@@ -3,6 +3,7 @@
 #include <iostream>
 
 // Получить значение-число из определённой ячейки в таблице.
+// Кроме имени столбца, в функцию передаётся номер строки.
 bool DataStorage::get_row_value_int(const std::string& table, const std::string& col, const int row,
     int& value)
 {
@@ -35,6 +36,7 @@ bool DataStorage::get_row_value_int(const std::string& table, const std::string&
 }
 
 // Получить значение-текст из определённой ячейки в таблице.
+// Кроме имени столбца, в функцию передаётся номер строки.
 bool DataStorage::get_row_value_txt(const std::string& table, const std::string& col, const int row,
     std::string& value)
 {
