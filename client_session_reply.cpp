@@ -1,8 +1,6 @@
 #include "client_session.h"
 #include "task_server.h"
 
-#include <iostream>
-
 // Сообщить клиенту об ошибке в запросе.
 void ClientSession::reply_error(RequestError req_error)
 {
@@ -38,14 +36,13 @@ void ClientSession::reply_request(CommandType command_type, bool result)
 	//json reply = R"( { "reply" : "ack" })"_json;
 	// или так
 	json reply;
-	reply["reply"] = "reply";
-	reply["result"] = result;
 
 	switch (command_type) {
 	case CommandType::Unknown:
 		break;
 	case CommandType::Test:
 		reply["command"] = "test";
+		reply["result"] = result;
 		break;
 	case CommandType::Shutdown:
 		reply["command"] = "shutdown";

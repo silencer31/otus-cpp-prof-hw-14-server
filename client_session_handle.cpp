@@ -27,7 +27,7 @@ void ClientSession::handle_request(const json& jdata)
 		break;
 	case CommandType::Test:
 		std::cout << "Test request has been received" << std::endl;
-		reply_request(CommandType::Test, true);
+		reply_request(CommandType::Test, !shutdown_flag);
 		break;
 	case CommandType::Shutdown:
 		std::cout << "Shutdown command received!" << std::endl;

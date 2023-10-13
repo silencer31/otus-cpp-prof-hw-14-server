@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 
     // Проверяем наличие указанного файла с базой данных.
     if (!boost::filesystem::exists(db_name)) {
-        std::cout << "Specified data base file is not found!" << std::endl;
+        std::cout << "Specified data base file not found!" << std::endl;
         return 1;
     }
 
