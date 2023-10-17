@@ -13,8 +13,10 @@ void ClientSession::do_read()
 		{
 			if (errcode) {
 				std::cout << " Session: " << session_id << ". Read data boost system error code: " << errcode.message() << std::endl;
-				clear_data_read();
-				do_read();
+				
+				// Сообщить серверу о необходимости выключения сессии
+				task_server_ptr->close_session(session_id);
+				
 				return;
 			}
 					
@@ -73,11 +75,11 @@ void ClientSession::do_write(const std::string& answer)
 // Выключение сессии.
 void ClientSession::shutdown()
 {
-	std::cout << "Shutdown process started. Session: " << session_id << std::endl;
-
 	if (!socket_.is_open()) {
 		return;
 	}
+
+	std::cout << "Shutdown process started. Session: " << session_id << std::endl;
 
 	boost::system::error_code ignore;
 

@@ -52,7 +52,7 @@ void TaskServer::do_accept()
 			);
 
 			// Добавляем новую сессию в коллекцию сессий сервера.
-			sessions.insert(std::pair{ session_number, session_ptr });
+			sessions[session_number] = session_ptr;
 				
 			session_number++;
 
@@ -70,7 +70,7 @@ void TaskServer::do_accept()
 // Получена команда на выключение сервера.
 void TaskServer::exit_received(int session_id)
 {
-	std::cout << "Server. Exit request received from session: " << session_id  << std::endl;
+	std::cout << "Task server: Exit request received from session: " << session_id  << std::endl;
 	
 	shutdown_flag = true;
 
@@ -84,4 +84,14 @@ void TaskServer::exit_received(int session_id)
 	// Отключаем прием новых соединений.
 	acceptor_.cancel();
 	//acceptor_.close();
+}
+
+// Закрытие сессии.
+void TaskServer::close_session(int session_id)
+{
+	std::cout << "Task server: Session will be closed: " << session_id << std::endl;
+
+	sessions[session_id]->shutdown();
+	sessions.erase(session_id);
+	session_number--;
 }

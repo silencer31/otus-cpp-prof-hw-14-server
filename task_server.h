@@ -20,6 +20,8 @@ public:
 	
 	void exit_received(int session_id); // Получена команда на выключение сервера.
 
+	void close_session(int session_id); // Закрытие сессии.
+
 	// Получаем тип команды в запросе от клиента или Unknown, если такой команды нет.
 	CommandType get_command_type(const std::string& comm) {
 		return ((commands.find(comm) == commands.end()) ? CommandType::Unknown : commands[comm]);

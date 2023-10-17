@@ -10,6 +10,9 @@ void ClientSession::handle_request(const json& jdata)
 	if (jdata.is_object()) {
 		std::cout << "jdata is object" << std::endl;
 	}
+	else {
+		std::cout << "jdata is NOT object" << std::endl;
+	}
 
 	// 
 	if ( !jdata.contains("command")) {
@@ -28,6 +31,11 @@ void ClientSession::handle_request(const json& jdata)
 	case CommandType::Test:
 		std::cout << "Test request has been received" << std::endl;
 		reply_request(CommandType::Test, !shutdown_flag);
+		break;
+	case CommandType::Closedown:
+		std::cout << "Closedown command received!" << std::endl;
+		reply_request(CommandType::Closedown, true);
+		task_server_ptr->close_session(session_id); // Сообщаем серверу о завершении сессии.
 		break;
 	case CommandType::Shutdown:
 		std::cout << "Shutdown command received!" << std::endl;
