@@ -63,7 +63,7 @@ void ClientSession::do_write(const std::string& answer)
 				std::cout << " Session: " << session_id << ". Write data boost system error: " << errcode.message() << std::endl;
 			}
 			
-			if (shutdown_flag) { // Если получена команда на выключение, больше не пытаемся читать из сети.
+			if (shutdown_session_flag) { // Если получена команда на выключение, больше не пытаемся читать из сети.
 				return;
 			}
 

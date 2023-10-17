@@ -18,7 +18,7 @@ public:
 
 	TaskServer(boost::asio::io_context& io_context, unsigned short port, const storage_shared& dstp);
 	
-	void exit_received(int session_id); // Получена команда на выключение сервера.
+	void shutdown_server(int session_id); // Получена команда на выключение сервера.
 
 	void close_session(int session_id); // Закрытие сессии.
 
@@ -35,10 +35,12 @@ private: // data
 	
 	int session_number;   // Кол-во сессий.
 
-	storage_shared data_storage_ptr;
+	const storage_shared data_storage_ptr;
 
 	session_map sessions; // Коллекция сессий.
-	command_map commands; // Команды от клиента, которые готов обрабатывать сервер.
+
+	// Команды от клиента, которые готов обрабатывать сервер.
+	command_map commands; // Возможно, лучше перенести это в класс ClientSession и сделать статичным параметром.
 
 	bool shutdown_flag; // Флаг, что нужно завершать работу сервера.	
 };

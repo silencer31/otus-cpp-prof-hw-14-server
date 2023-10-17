@@ -8,11 +8,12 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	, session_number(0)
 	, shutdown_flag(false)
 {
-	commands["test"]	 = CommandType::Test;
-	commands["shutdown"] = CommandType::Shutdown;
-	commands["login"]	 = CommandType::Login;
-	commands["getdata"]  = CommandType::GetData;
-	commands["editdata"] = CommandType::EditData;
+	commands["test"]	  = CommandType::Test;
+	commands["closedown"] = CommandType::Closedown;
+	commands["shutdown"]  = CommandType::Shutdown;
+	commands["login"]	  = CommandType::Login;
+	commands["getdata"]   = CommandType::GetData;
+	commands["editdata"]  = CommandType::EditData;
 
 	do_accept();
 }
@@ -68,7 +69,7 @@ void TaskServer::do_accept()
 }
 
 // Получена команда на выключение сервера.
-void TaskServer::exit_received(int session_id)
+void TaskServer::shutdown_server(int session_id)
 {
 	std::cout << "Task server: Exit request received from session: " << session_id  << std::endl;
 	

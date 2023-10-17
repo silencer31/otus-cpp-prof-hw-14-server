@@ -19,8 +19,9 @@ using namespace nlohmann::literals;
 enum class RequestError {
 	ParseError,
 	IsNull,
-	UnknownCommand,
-	BadParameters
+	NoCommand, // Нельзя определить тип запроса
+	UnknownCommand, // Неизвестный тип запроса
+	BadParameters // Что-то не так с параметрами
 };
 
 // Виды команд от клиента.
@@ -50,7 +51,7 @@ public:
 		, session_id(s_id)
 		, task_server_ptr(ts_ptr)
 		, data_storage_ptr(dstp)
-		, shutdown_flag(false)
+		, shutdown_session_flag(false)
 	{}
 
 	~ClientSession() {
@@ -79,14 +80,24 @@ private: // methods
 	// Обработка запроса от клиента.
 	void handle_request(const json& jdata);
 
+	// Обработка запроса на завершение сессии.
+	void handle_closedown();
+
 	// Обработка запроса на выключение сервера.
 	void handle_shutdown();
 
 	// Обработка запроса проверки пары логин/пароль.
-	void handle_login(const std::string& username, const std::string& password);
+	void handle_login(const json& jdata);
+
+	// Обработка запроса на получение данных.
+	void handle_getdata(const json& jdata);
+
+	// Обработка запроса на изменение данных.
+	void handle_editdata(const json& jdata);
+
 
 	// Сообщить клиенту об ошибке в запросе.
-	void reply_error(RequestError req_error);
+	void reply_error(RequestError req_error, CommandType command_type);
 
 	// Ответ клиенту на запрос.
 	void reply_request(CommandType command_type, bool result);
@@ -104,7 +115,9 @@ private: // data
 	char data_read[max_length]; // Для получения данных из сети.
 	char data_send[max_length];	// Для отправки данных.
 
-	bool shutdown_flag; // Флаг, что нужно завершать сессию и работу сервера.
+	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
+
+	std::string last_command_str; // Тип полученного запроса в виде строки.
 };
 
 using session_shared = std::shared_ptr<ClientSession>;
