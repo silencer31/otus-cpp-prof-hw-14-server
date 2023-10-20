@@ -1,37 +1,6 @@
 #include "client_session.h"
 #include "task_server.h"
 
-// Сообщить клиенту об ошибке в запросе.
-void ClientSession::reply_error(RequestError req_error, CommandType command_type)
-{
-	json reply;
-	reply["reply"] = "error";
-
-	switch (req_error) {
-	case RequestError::ParseError:
-		reply["info"] = "json parse error";
-		break;
-	case RequestError::IsNull:
-		reply["info"] = "json data is null";
-		break;
-	case RequestError::NoCommand:
-		reply["info"] = "unknown command";
-		break;
-	case RequestError::UnknownCommand:
-		reply["info"] = "unknown command";
-		break;
-	case RequestError::BadParameters:
-		reply["info"] = "bad parameters";
-		break;
-	default:
-		reply["info"] = "unknown error";
-		break;
-	}
-
-	// Отправляем json в виде строки.
-	do_write( reply.dump() );
-}
-
 // Ответ клиенту на запрос.
 void ClientSession::reply_request(CommandType command_type, bool result)
 {

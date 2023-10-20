@@ -24,9 +24,9 @@ void ClientSession::do_read()
 			
 			// Проверка, что данные пришли в формате json.
 			if (!json::accept(data_read)) {
-				std::cerr << "json parse error" << std::endl;
+				std::cerr << "json parse error. Data: " << data_read  << std::endl;
 				clear_data_read();
-				reply_error(RequestError::ParseError);
+				reply_error(RequestError::ParseError, CommandType::Unknown);
 				return;
 			}
 			
@@ -39,7 +39,7 @@ void ClientSession::do_read()
 			// Проверка, что json не пустой. 
 			if (jdata.is_null()) {
 				std::cerr << "json data is null" << std::endl;
-				reply_error(RequestError::IsNull);
+				reply_error(RequestError::IsNull, CommandType::Unknown);
 				return;
 			}
 			
