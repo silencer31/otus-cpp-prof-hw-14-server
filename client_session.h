@@ -19,6 +19,7 @@ using namespace nlohmann::literals;
 enum class RequestError {
 	ParseError,
 	IsNull,
+	WrongType, // Неверный тип данных в запросе.
 	NoCommand, // Нельзя определить тип запроса
 	UnknownCommand, // Неизвестный тип запроса
 	BadParameters // Что-то не так с параметрами
@@ -78,7 +79,7 @@ private: // methods
 	void prepare_data_send(const std::string& data);
 
 	// Обработка запроса от клиента.
-	void handle_request(const json& jdata);
+	void handle_request();
 
 	// Обработка запроса на завершение сессии.
 	void handle_closedown();
@@ -87,20 +88,20 @@ private: // methods
 	void handle_shutdown();
 
 	// Обработка запроса проверки пары логин/пароль.
-	void handle_login(const json& jdata);
+	void handle_login();
 
 	// Обработка запроса на получение данных.
-	void handle_getdata(const json& jdata);
+	void handle_getdata();
 
 	// Обработка запроса на изменение данных.
-	void handle_editdata(const json& jdata);
+	void handle_editdata();
 
 
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError req_error, CommandType command_type);
 
 	// Ответ клиенту на запрос.
-	void reply_request(CommandType command_type, bool result);
+	void reply_request(CommandType command_type);
 
 private: // data
 	tcp::socket socket_;
@@ -117,7 +118,7 @@ private: // data
 
 	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
 
-	std::string last_command_str; // Тип полученного запроса в виде строки.
+	json client_request; // Запрос, который находится в обработке.
 };
 
 using session_shared = std::shared_ptr<ClientSession>;

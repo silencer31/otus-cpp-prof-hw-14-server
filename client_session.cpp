@@ -13,38 +13,54 @@ void ClientSession::do_read()
 		{
 			if (errcode) {
 				std::cout << " Session: " << session_id << ". Read data boost system error code: " << errcode.message() << std::endl;
-				
+
 				// Сообщить серверу о необходимости выключения сессии
 				task_server_ptr->close_session(session_id);
-				
+
 				return;
 			}
-					
+
 			std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
-			
+
 			// Проверка, что данные пришли в формате json.
 			if (!json::accept(data_read)) {
-				std::cerr << "json parse error. Data: " << data_read  << std::endl;
+				std::cerr << "json parse error. Data: " << data_read << std::endl;
 				clear_data_read();
 				reply_error(RequestError::ParseError, CommandType::Unknown);
 				return;
 			}
-			
+
 			// Преобразуем char строку в json object.
-			json jdata = json::parse(data_read);
+			const json jdata = json::parse(data_read);
 
 			// Очищаем буфер для следующего запроса от клиента.
 			clear_data_read();
 
 			// Проверка, что json не пустой. 
 			if (jdata.is_null()) {
-				std::cerr << "json data is null" << std::endl;
 				reply_error(RequestError::IsNull, CommandType::Unknown);
 				return;
 			}
-			
+
+			// Проверка, является ли объектом.
+			if (!jdata.is_object()) {
+				reply_error(RequestError::WrongType, CommandType::Unknown);
+				return;
+			}
+
+			// Наличие поля command обязательно.
+			if (!jdata.contains("command")) {
+				reply_error(RequestError::NoCommand, CommandType::Unknown);
+				return;
+			}
+
+			client_request.clear();
+			client_request = jdata;
+
+			std::cout << "Received request contains command: " << client_request["command"]) << std::endl;
+
 			// Обработка запроса в виде json.
-			handle_request(jdata);
+			handle_request();
 		}
 	);
 }

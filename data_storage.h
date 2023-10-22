@@ -98,3 +98,4 @@ private:
 };
 
 using storage_shared = std::shared_ptr<DataStorage>;
+using storage_unique = std::unique_ptr<DataStorage>;

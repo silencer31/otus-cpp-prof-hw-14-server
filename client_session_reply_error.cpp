@@ -43,6 +43,9 @@ void ClientSession::reply_error(RequestError req_error, CommandType command_type
 	case RequestError::IsNull:
 		reply["description"] = "json data is null";
 		break;
+	case RequestError::WrongType:
+		reply["description"] = "json is not object";
+		break;
 	case RequestError::NoCommand:
 		reply["description"] = "unknown command";
 		break;
