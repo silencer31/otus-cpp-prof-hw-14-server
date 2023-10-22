@@ -83,8 +83,6 @@ public:
 	// Удалить из таблицы строки с указанием столбца и значений в нём.
 	bool delete_rows(const std::string& table, const std::string& column, const vector_str& values);
 
-	// Проверка пары логин/пароль.
-	bool check_login(const std::string& username, const std::string& password);
 
 private:
 	sqlite3* handle;
@@ -97,5 +95,4 @@ private:
 	std::mutex data_mutex; // Для защиты базы данных при параллельном доступе.	
 };
 
-using storage_shared = std::shared_ptr<DataStorage>;
 using storage_unique = std::unique_ptr<DataStorage>;

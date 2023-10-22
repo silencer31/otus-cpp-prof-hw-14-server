@@ -8,7 +8,7 @@
 #include <map>
 
 #include "nlohmann/json.hpp"
-#include "data_storage.h"
+#include "request_manager.h"
 
 
 using boost::asio::ip::tcp;
@@ -46,12 +46,12 @@ public:
 	
 	ClientSession(
 		const task_server_shared& ts_ptr,
-		const storage_shared& dstp,
+		const request_manager_shared& rm_ptr,
 		tcp::socket socket, int s_id)
 		: socket_(std::move(socket))
 		, session_id(s_id)
 		, task_server_ptr(ts_ptr)
-		, data_storage_ptr(dstp)
+		, request_manager_ptr(rm_ptr)
 		, shutdown_session_flag(false)
 	{}
 
@@ -96,7 +96,6 @@ private: // methods
 	// Обработка запроса на изменение данных.
 	void handle_editdata();
 
-
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError req_error, CommandType command_type);
 
@@ -109,7 +108,7 @@ private: // data
 
 	const task_server_shared task_server_ptr; // Для связи с сервером, создавшим данную сессию.
 
-	const storage_shared data_storage_ptr; // Для связи с хранилищем данных.
+	const request_manager_shared request_manager_ptr; // Для отправки запросов к базе данных.
 	
 	enum { max_length = 1024 };
 

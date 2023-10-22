@@ -2,11 +2,9 @@
 
 #include <iostream>
 
-TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port, const storage_shared& dstp)
+TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port, const char* file_path)
 	: acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
-	, data_storage_ptr(dstp)
-	, session_number(0)
-	, shutdown_flag(false)
+	, request_manager_ptr(std::make_shared<RequestManager>(file_path))
 {
 	commands["test"]	  = CommandType::Test;
 	commands["closedown"] = CommandType::Closedown;
@@ -14,6 +12,10 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	commands["login"]	  = CommandType::Login;
 	commands["getdata"]   = CommandType::GetData;
 	commands["editdata"]  = CommandType::EditData;
+
+	session_number = 0;
+
+	shutdown_flag = false;
 
 	do_accept();
 }
