@@ -118,6 +118,7 @@ private: // data
 	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
 
 	json client_request; // Запрос, который находится в обработке.
+	json server_reply;   // Ответ клиенту от сервера, если не было ошибки.
 };
 
 using session_shared = std::shared_ptr<ClientSession>;

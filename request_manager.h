@@ -13,7 +13,7 @@ public:
 	~RequestManager() = default;
 
 	// Проверка пары логин/пароль.
-	bool check_login(const std::string& username, const std::string& password);
+	bool check_login(const std::string& username, const std::string& password, int& user_type_number);
 
 private:
 	const storage_unique data_storage_ptr;

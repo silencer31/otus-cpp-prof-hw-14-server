@@ -6,6 +6,8 @@
 // Обработка запроса от клиента.
 void ClientSession::handle_request()
 {
+	server_reply.clear(); // Очищаем предыдущий ответ.
+
 	// Определяем тип команды/запроса.
 	switch (task_server_ptr->get_command_type(client_request["command"])) {
 	case CommandType::Unknown:
@@ -60,7 +62,16 @@ void ClientSession::handle_login()
 		return;
 	}
 
-	bool res = request_manager_ptr->check_login(client_request["username"], client_request["password"]);
+	int user_type_number;
+
+	server_reply["result"] = request_manager_ptr->check_login(client_request["username"],
+												client_request["password"],
+												user_type_number);
+
+	if (server_reply["result"]) {
+		server_reply["user_type_number"] = user_type_number;
+	}
+
 
 	reply_request(CommandType::Login);
 }
