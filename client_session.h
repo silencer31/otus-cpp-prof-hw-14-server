@@ -97,7 +97,7 @@ private: // methods
 	void handle_editdata();
 
 	// Сообщить клиенту об ошибке в запросе.
-	void reply_error(RequestError req_error, CommandType command_type);
+	void reply_error(RequestError request_error);
 
 	// Ответ клиенту на запрос.
 	void reply_request(CommandType command_type);

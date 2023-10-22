@@ -9,7 +9,7 @@ void ClientSession::handle_request()
 	// Определяем тип команды/запроса.
 	switch (task_server_ptr->get_command_type(client_request["command"])) {
 	case CommandType::Unknown:
-		reply_error(RequestError::UnknownCommand, CommandType::Unknown);
+		reply_error(RequestError::UnknownCommand);
 		break;
 	case CommandType::Test:
 		reply_request(CommandType::Test);
@@ -21,13 +21,13 @@ void ClientSession::handle_request()
 		handle_shutdown(); // Сообщаем серверу о необходимости завершения работы.
 		break;
 	case CommandType::Login:
-		handle_login(jdata);
+		handle_login();
 		break;
 	case CommandType::GetData:
-		handle_getdata(jdata);
+		handle_getdata();
 		break;
 	case CommandType::EditData:
-		handle_editdata(jdata);
+		handle_editdata();
 		break;
 	default:
 		break;
@@ -60,7 +60,7 @@ void ClientSession::handle_login()
 		return;
 	}
 
-	data_storage_ptr->check_login(username, password);
+	bool res = request_manager_ptr->check_login(client_request["username"], client_request["password"]);
 
 	reply_request(CommandType::Login);
 }

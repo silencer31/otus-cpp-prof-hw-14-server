@@ -49,7 +49,7 @@ void TaskServer::do_accept()
 			// —оздаем клиентскую сессию и запускаем прием данных.
 			session_shared session_ptr = std::make_shared<ClientSession>(
 				shared_from_this(),
-				data_storage_ptr,
+				request_manager_ptr,
 				std::move(socket),
 				session_number //  ажда€ сесси€ знает свой номер.
 			);

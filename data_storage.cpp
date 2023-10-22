@@ -16,9 +16,7 @@ bool DataStorage::init_database()
 
     std::cout << db_path << " database opened successfully!" << std::endl;
 
-    bool res = check_login("user_test", "pass");
-
-    return res;
+    return true;
 }
 
 bool DataStorage::handle_request(const std::string& request)

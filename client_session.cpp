@@ -26,7 +26,7 @@ void ClientSession::do_read()
 			if (!json::accept(data_read)) {
 				std::cerr << "json parse error. Data: " << data_read << std::endl;
 				clear_data_read();
-				reply_error(RequestError::ParseError, CommandType::Unknown);
+				reply_error(RequestError::ParseError);
 				return;
 			}
 
@@ -38,26 +38,26 @@ void ClientSession::do_read()
 
 			// Проверка, что json не пустой. 
 			if (jdata.is_null()) {
-				reply_error(RequestError::IsNull, CommandType::Unknown);
+				reply_error(RequestError::IsNull);
 				return;
 			}
 
 			// Проверка, является ли объектом.
 			if (!jdata.is_object()) {
-				reply_error(RequestError::WrongType, CommandType::Unknown);
+				reply_error(RequestError::WrongType);
 				return;
 			}
 
 			// Наличие поля command обязательно.
 			if (!jdata.contains("command")) {
-				reply_error(RequestError::NoCommand, CommandType::Unknown);
+				reply_error(RequestError::NoCommand);
 				return;
 			}
 
 			client_request.clear();
 			client_request = jdata;
 
-			std::cout << "Received request contains command: " << client_request["command"]) << std::endl;
+			std::cout << "Received request contains command: " << client_request["command"] << std::endl;
 
 			// Обработка запроса в виде json.
 			handle_request();

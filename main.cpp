@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         std::shared_ptr<TaskServer> task_server_ptr = std::make_shared<TaskServer>(
             io_context,
             static_cast<unsigned short>(port), 
-            db_name.c_str)
+            db_name.c_str()
         );
 
         std::cout << "___ io run ___ waiting" << std::endl;
