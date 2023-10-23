@@ -21,15 +21,24 @@ public:
 	// Получить user_type_number по user_unique_id.
 	int get_user_type_by_user_id(const int user_id);
 
-	// Текстовое название типа пользователя
+	// Текстовое название типа пользователя.
 	bool get_user_type_name_by_user_id(const int user_id, std::string& type_name);
+
+	// Получить ФИО пользователя по user_unique_id.
+	bool get_fio_by_user_id(const int user_id, std::vector<std::string> fio);
+
+	// Узнать task_unique_id по user_unique_id.
+	int get_task_id_by_user_id(const int user_id);
+
+	// Узнать status_type_number по task_unique_id.
+	int get_status_type_by_task_id(const int task_id);
+
+	// Текстовое название состояния задачи.
+	bool get_status_name_by_task_id(const int task_id, std::string& status_name);
 
 private: // methods
 	// Узнать пароль пользователя по user_unique_id.
 	bool get_password_by_user_id(const int user_id, std::string& password);
-
-
-
 
 private: // data
 	const storage_unique data_storage_ptr;

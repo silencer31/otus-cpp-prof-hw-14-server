@@ -64,9 +64,9 @@ void ClientSession::handle_login()
 
 	int user_type_number;
 
-	server_reply["result"] = request_manager_ptr->check_login(client_request["username"],
+	/*server_reply["result"] = request_manager_ptr->check_login(client_request["username"],
 												client_request["password"],
-												user_type_number);
+												user_type_number);*/
 
 	if (server_reply["result"]) {
 		server_reply["user_type_number"] = user_type_number;

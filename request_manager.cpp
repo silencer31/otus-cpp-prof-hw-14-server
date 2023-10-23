@@ -1,7 +1,5 @@
 #include "request_manager.h"
 
-#include <string>
-
 // Проверка пары логин/пароль.
 bool RequestManager::check_password(const int user_id, const std::string& password)
 {
