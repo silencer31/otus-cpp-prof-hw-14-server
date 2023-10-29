@@ -41,6 +41,9 @@ public:
 	// Выполнить запрос к базе данных с возвратом ошибки.
 	bool execute_db_request(const std::string& request, char** err_ptr);
 
+	// Узнать кол-во записей/строк в таблице.
+	int get_records_number(const std::string& table);
+
 	// Узнать, есть ли переданное строкое значение в указанном столбце таблицы.
 	bool get_txt_value_presence(const std::string& table, const std::string& col, std::string& find_value);
 

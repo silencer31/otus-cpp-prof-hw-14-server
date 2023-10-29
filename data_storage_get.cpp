@@ -2,6 +2,36 @@
 
 #include <iostream>
 
+// Узнать кол-во записей/строк в таблице.
+int DataStorage::get_records_number(const std::string& table)
+{
+    const std::string request = "SELECT COUNT(*) FROM " + table;
+
+    data_mutex.lock();
+
+    if (SQLITE_OK != sqlite3_prepare_v2(handle, request.c_str(), -1, &stmt, nullptr)) {
+        std::cout << "sqlite prepare error " << sqlite3_errmsg(handle) << std::endl;
+        data_mutex.unlock();
+        return false;
+    }
+
+    bool value_found = false;
+
+    // Значения из целевого столбца добавляем в вектор чисел.
+    while (SQLITE_ROW == sqlite3_step(stmt)) {
+        if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
+            value_found = true;
+            break;
+        }
+    }
+
+    sqlite3_finalize(stmt);
+
+    data_mutex.unlock();
+
+    return value_found;
+}
+
 // Узнать, есть ли переданное строковое значение в указанном столбце таблицы.
 bool DataStorage::get_txt_value_presence(const std::string& table, const std::string& col, std::string& find_value)
 {
@@ -30,7 +60,6 @@ bool DataStorage::get_txt_value_presence(const std::string& table, const std::st
     data_mutex.unlock();
 
     return value_found;
-
 }
 
 // Получить значение-число из определённой ячейки в таблице.
