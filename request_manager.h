@@ -34,6 +34,9 @@ public:
 	// Проверка пароля.
 	bool check_password(const int user_id, const std::string& password);
 
+	// Узнать наибольший id пользователя.
+	int get_user_id_max_number();
+
 	// Получить user_unique_id по логину пользователя. Уникальный идентификатор пользователя в базе.
 	int get_user_id_by_login(const std::string& username);
 
@@ -47,6 +50,9 @@ public:
 	bool get_fio_by_user_id(const int user_id, vector_str& fio);
 
 // ***** Получаем разные данные, связанные с задачами *****
+
+	// Узнать наибольший id задач.
+	int get_task_id_max_number();
 
 	// Узнать status_type_number по task_unique_id. Число, соответствующее статусу задачи.
 	int get_status_type_by_task_id(const int task_id);
@@ -62,28 +68,29 @@ public:
 
 // ***** Добавляем в базу данных *****
 	// Добавить нового пользователя.
-	bool add_user(UserType user_type, const std::string& login,
+	bool add_user(UserType user_type, const std::string& login, const std::string& password,
 		const std::string& sname, const std::string& fname, const std::string& patr);
 
 	// Добавить новую задачу.
-	bool add_task();
+	bool add_task(const int user_id, const std::string& deadline,
+		const std::string& name, const std::string& description);
 
 // ***** Удаляем из базы данных *****
 	// Удалить пользователя.
-	bool del_user();
+	bool del_user(const int user_id);
 
 	// Удалить задачу.
-	bool del_task();
+	bool del_task(const int task_id);
 
 // ***** Изменяем значения в базе *****
 	// Установить новый пароль.
-	bool set_password();
+	bool set_password(const int user_id, const std::string& password);
 
 	// Изменить тип пользователя.
-	bool set_user_type();
+	bool set_user_type(const int user_id, UserType user_type);
 
 	// Изменить статус задачи.
-	bool set_task_status();
+	bool set_task_status(const int task_id, TaskStatus task_status);
 
 private: // methods
 	// Узнать пароль пользователя по user_unique_id.

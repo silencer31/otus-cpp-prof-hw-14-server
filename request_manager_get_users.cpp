@@ -2,6 +2,18 @@
 
 #include <string>
 
+// Узнать наибольший id пользователя.
+int RequestManager::get_user_id_max_number()
+{
+    int id_value;
+
+    if (data_storage_ptr->get_column_max_int_value("Users", "user_unique_id", id_value)) {
+        return id_value;
+    }
+
+    return -1;
+}
+
 // Получить user_unique_id по логину пользователя.
 int RequestManager::get_user_id_by_login(const std::string& username)
 {
@@ -57,5 +69,5 @@ bool RequestManager::get_password_by_user_id(const int user_id, std::string& pas
 {
     // Узнаем password в таблице Security по user_unique_id 
     return data_storage_ptr->get_corresp_col_value_txt("Security", "user_unique_id", "password",
-        std::to_string(user_id), password));
+        std::to_string(user_id), password);
 }

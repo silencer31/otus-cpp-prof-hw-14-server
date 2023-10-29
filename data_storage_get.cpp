@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-// Узнать кол-во записей/строк в таблице.
-int DataStorage::get_records_number(const std::string& table)
+// Получить максимальное числовое значение из указанного столбца.
+bool DataStorage::get_column_max_int_value(const std::string& table, const std::string& col, int& max_value)
 {
-    const std::string request = "SELECT COUNT(*) FROM " + table;
+    const std::string request = "SELECT " + col + " FROM " + table;
 
     data_mutex.lock();
 
@@ -15,25 +15,31 @@ int DataStorage::get_records_number(const std::string& table)
         return false;
     }
 
-    bool value_found = false;
+    int current_row = 0;
+    int value = 0;
 
-    // Значения из целевого столбца добавляем в вектор чисел.
     while (SQLITE_ROW == sqlite3_step(stmt)) {
-        if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
-            value_found = true;
-            break;
+        value = sqlite3_column_int(stmt, 0);
+
+        if (current_row == 0) {
+            max_value = value;
         }
+        else {
+            if (value > max_value) { max_value = value; }
+        }
+
+        ++current_row;
     }
 
     sqlite3_finalize(stmt);
 
     data_mutex.unlock();
 
-    return value_found;
+    return true;
 }
 
 // Узнать, есть ли переданное строковое значение в указанном столбце таблицы.
-bool DataStorage::get_txt_value_presence(const std::string& table, const std::string& col, std::string& find_value)
+bool DataStorage::get_txt_value_presence(const std::string& table, const std::string& col, const std::string& find_value)
 {
     const std::string request = "SELECT " + col + " FROM " + table;
 
@@ -86,6 +92,8 @@ bool DataStorage::get_row_value_int(const std::string& table, const std::string&
             value_found = true;
             break;
         }
+
+        ++current_row;
     }
 
     sqlite3_finalize(stmt);
@@ -119,6 +127,8 @@ bool DataStorage::get_row_value_txt(const std::string& table, const std::string&
             value_found = true;
             break;
         }
+
+        ++current_row;
     }
 
     sqlite3_finalize(stmt);

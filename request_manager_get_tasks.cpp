@@ -2,6 +2,18 @@
 
 #include <string>
 
+// Узнать наибольший id задач.
+int RequestManager::get_task_id_max_number()
+{
+    int id_value;
+
+    if (data_storage_ptr->get_column_max_int_value("Tasks", "task_unique_id", id_value)) {
+        return id_value;
+    }
+
+    return -1;
+}
+
 // Узнать status_type_number по task_unique_id. Число, соответствующее состоянию задачи.
 int RequestManager::get_status_type_by_task_id(const int task_id)
 {
