@@ -6,6 +6,7 @@
 #include "sqlite3.h"
 
 using vector_str = std::vector<std::string>;
+using vector_int = std::vector<int>;
 
 class DataStorage
 {
@@ -40,6 +41,9 @@ public:
 	// Выполнить запрос к базе данных с возвратом ошибки.
 	bool execute_db_request(const std::string& request, char** err_ptr);
 
+	// Узнать, есть ли переданное строкое значение в указанном столбце таблицы.
+	bool get_txt_value_presence(const std::string& table, const std::string& col, std::string& find_value);
+
 	// Получить значение-число из определённой ячейки в таблице.
 	bool get_row_value_int(const std::string& table, const std::string& col, const int row,
 		int& value);
@@ -54,11 +58,29 @@ public:
 		const std::string& find_col, const std::string& target_col,
 		const std::string& find_value, int& get_value);
 
+	// Узнать, сколько раз значение встречается в указанном столбце указанной таблицы.
+	int get_occurances_number(const std::string& table, const std::string& find_col, const std::string& find_value);
+		
+
+	// Перебираем все строки, содержащие переданное значение в указанном столбце.
+	// Если находим, берём значение-число из той же строки, но из второго указанного столбца и добавляем его в вектор чисел.
+	void get_corresp_col_int_vector(const std::string& table,
+		const std::string& find_col, const std::string& target_col,
+		const std::string& find_value, vector_int& values);
+
+
 	// Ищем строку, содержащую переданное значение в указанном столбце.
 	// Если находим, возвращаем значение-текст из той же строки, но из второго указанного столбца.
 	bool get_corresp_col_value_txt(const std::string& table,
 		const std::string& find_col, const std::string& target_col,
 		const std::string& find_value, std::string& get_value);
+
+	// Ищем строку, содержащую переданное значение в указанном столбце.
+	// Собираем значения из переданных столбцов в той же строке.
+	bool get_corresp_columns_txt_values(const std::string& table,
+		const std::string& find_col, const vector_str& target_columns,
+		const std::string& find_value, vector_str& values);
+
 
 	// Обновить значение в столбце таблицы с соблюдением условия.
 	bool set_value_with_clause(const std::string& table,

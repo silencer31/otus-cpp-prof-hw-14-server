@@ -39,49 +39,23 @@ bool RequestManager::get_user_type_name_by_user_id(const int user_id, std::strin
     }
 
     // Узнаем user_type_description в таблице UserTypes по user_type_number. 
-    if (data_storage_ptr->get_corresp_col_value_txt("Security", "user_type_number", "user_type_description", std::to_string(user_type_value), type_name)) {
-        return true;
-    }
-
-    return false;
+    return data_storage_ptr->get_corresp_col_value_txt("Security", "user_type_number", "user_type_description",
+        std::to_string(user_type_value), type_name);
 }
 
 // Получить ФИО пользователя по user_unique_id.
-bool RequestManager::get_fio_by_user_id(const int user_id, std::vector<std::string> fio)
+bool RequestManager::get_fio_by_user_id(const int user_id, vector_str& fio)
 {
-    std::string str_value;
+    const vector_str target_columns{ "second_name", "first_name", "patronymic" };
 
-    // Узнаем second_name (фамилию) в таблице Users по user_unique_id 
-    if (!data_storage_ptr->get_corresp_col_value_txt("Users", "user_unique_id", "second_name", std::to_string(user_id), str_value)) {
-        return false;
-    }
-
-    fio.push_back(str_value);
-
-    // Узнаем first_name (имя) в таблице Users по user_unique_id 
-    if (!data_storage_ptr->get_corresp_col_value_txt("Users", "user_unique_id", "first_name", std::to_string(user_id), str_value)) {
-        return false;
-    }
-
-    fio.push_back(str_value);
-
-    // Узнаем patronymic (отчество) в таблице Users по user_unique_id 
-    if (!data_storage_ptr->get_corresp_col_value_txt("Users", "user_unique_id", "patronymic", std::to_string(user_id), str_value)) {
-        return false;
-    }
-
-    fio.push_back(str_value);
-
-    return true;
+    return data_storage_ptr->get_corresp_columns_txt_values("Users", "user_unique_id", target_columns,
+        std::to_string(user_id), fio);
 }
 
 // Узнать пароль пользователя по user_unique_id.
 bool RequestManager::get_password_by_user_id(const int user_id, std::string& password)
 {
     // Узнаем password в таблице Security по user_unique_id 
-    if ( data_storage_ptr->get_corresp_col_value_txt("Security", "user_unique_id", "password", std::to_string(user_id), password)) {
-        return true;
-    }
-
-    return false;
+    return data_storage_ptr->get_corresp_col_value_txt("Security", "user_unique_id", "password",
+        std::to_string(user_id), password));
 }

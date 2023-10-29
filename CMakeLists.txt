@@ -31,7 +31,7 @@ add_executable(task_server main.cpp
 client_session.cpp client_session_handle.cpp client_session_reply.cpp client_session_reply_error.cpp
 task_server.cpp
 data_storage.cpp data_storage_get.cpp data_storage_set.cpp data_storage_insert.cpp data_storage_delete.cpp
-request_manager.cpp request_manager_get_users.cpp request_manager_set_users.cpp request_manager_get_tasks.cpp request_manager_set_tasks.cpp
+request_manager.cpp request_manager_get_users.cpp request_manager_set_users.cpp request_manager_get_tasks.cpp request_manager_set_tasks.cpp request_manager_add_del.cpp
 "${sqlite3_SOURCE_DIR}/sqlite3.c")
 
 add_executable(db_creator db_creator.cpp sql_execute_functions.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
