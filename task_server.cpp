@@ -10,8 +10,10 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	commands["closedown"] = CommandType::Closedown;
 	commands["shutdown"]  = CommandType::Shutdown;
 	commands["login"]	  = CommandType::Login;
-	commands["getdata"]   = CommandType::GetData;
-	commands["editdata"]  = CommandType::EditData;
+	commands["get"]		  = CommandType::Get;
+	commands["add"]		  = CommandType::Add;
+	commands["edit"]	  = CommandType::Edit;
+	commands["delete"]	  = CommandType::Delete;
 
 	session_number = 0;
 

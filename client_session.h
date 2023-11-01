@@ -15,7 +15,7 @@ using boost::asio::ip::tcp;
 using json = nlohmann::json;
 using namespace nlohmann::literals;
 
-// Виды ошибок обработки запроса от клиента.
+// Виды ошибок в запросе от клиента.
 enum class RequestError {
 	ParseError,
 	IsNull,
@@ -27,13 +27,15 @@ enum class RequestError {
 
 // Виды команд от клиента.
 enum class CommandType {
-	Unknown,   // Неизвестный серверу тип команды.
-	Test,      // Тестовый запрос для проверки связи.
-	Closedown, // Сессия будет завершена.
-	Shutdown,  // Запрос на выключение сервера.
-	Login,
-	GetData,
-	EditData
+	Unknown,	// Неизвестный серверу тип команды.
+	Test,		// Тестовый запрос для проверки связи.
+	Closedown,	// Сессия будет завершена.
+	Shutdown,	// Запрос на выключение сервера.
+	Login,		// Логин пользователя в системе.
+	Get,		// Получение данных из базы.
+	Add,		// Добавление данных в базу.
+	Edit,		// Изменение значения в базе.
+	Delete		// Удаление данных из базы.
 };
 
 class TaskServer;
@@ -52,6 +54,9 @@ public:
 		, session_id(s_id)
 		, task_server_ptr(ts_ptr)
 		, request_manager_ptr(rm_ptr)
+		, logged_user_id(0)
+		, logged_user_type(UserType::User)
+		, user_logged(false)
 		, shutdown_session_flag(false)
 	{}
 
@@ -91,10 +96,16 @@ private: // methods
 	void handle_login();
 
 	// Обработка запроса на получение данных.
-	void handle_getdata();
+	void handle_get();
+
+	// Обработка запроса на добавление данных.
+	void handle_add();
 
 	// Обработка запроса на изменение данных.
-	void handle_editdata();
+	void handle_edit();
+
+	// Обработка запроса на удаление данных.
+	void handle_delete();
 
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError request_error);
@@ -104,7 +115,7 @@ private: // methods
 
 private: // data
 	tcp::socket socket_;
-	int session_id;
+	int session_id; // Идентификатор сессии.
 
 	const task_server_shared task_server_ptr; // Для связи с сервером, создавшим данную сессию.
 
@@ -115,10 +126,14 @@ private: // data
 	char data_read[max_length]; // Для получения данных из сети.
 	char data_send[max_length];	// Для отправки данных.
 
+	int logged_user_id; // Идентификатор залогиненного пользователя. 
+	UserType logged_user_type; // Тип залогиненного пользователя.
+	bool user_logged; // Флаг, что пользователь был успешно залогинен. Иначе не даём изменить базу.
+
 	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
 
 	json client_request; // Запрос, который находится в обработке.
-	json server_reply;   // Ответ клиенту от сервера, если не было ошибки.
+	json server_reply;   // Ответ клиенту от сервера, если не было ошибки в запросе.
 };
 
 using session_shared = std::shared_ptr<ClientSession>;

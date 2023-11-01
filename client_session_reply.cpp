@@ -23,12 +23,19 @@ void ClientSession::reply_request(CommandType command_type)
 		break;
 	case CommandType::Login:
 		server_reply["command"] = "login";
+		server_reply["result"] = user_logged;
 		break;
-	case CommandType::GetData:
-		server_reply["command"] = "getdata";
+	case CommandType::Get:
+		server_reply["command"] = "get";
 		break;
-	case CommandType::EditData:
-		server_reply["command"] = "editdata";
+	case CommandType::Add:
+		server_reply["command"] = "add";
+		break;
+	case CommandType::Edit:
+		server_reply["command"] = "edit";
+		break;
+	case CommandType::Delete:
+		server_reply["command"] = "delete";
 		break;
 	default:
 		break;

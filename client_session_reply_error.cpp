@@ -10,25 +10,25 @@ void ClientSession::reply_error(RequestError request_error)
 	
 	switch (request_error) {
 	case RequestError::ParseError:
-		reply["description"] = "json parse error";
+		reply["details"] = "json parse error";
 		break;
 	case RequestError::IsNull:
-		reply["description"] = "json data is null";
+		reply["details"] = "json data is null";
 		break;
 	case RequestError::WrongType:
-		reply["description"] = "json is not object";
+		reply["details"] = "json is not object";
 		break;
 	case RequestError::NoCommand:
-		reply["description"] = "command field not found";
+		reply["details"] = "command field not found";
 		break;
 	case RequestError::UnknownCommand:
-		reply["description"] = "unknown command : " + client_request["command"];
+		reply["details"] = "unknown command : " + client_request["command"];
 		break;
 	case RequestError::BadParameters:
-		reply["description"] = "bad parameters : " + client_request["command"];
+		reply["details"] = "bad parameters : " + client_request["command"];
 		break;
 	default:
-		reply["description"] = "unknown error";
+		reply["details"] = "unknown error";
 		break;
 	}
 
