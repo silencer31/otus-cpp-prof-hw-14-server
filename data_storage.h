@@ -55,6 +55,12 @@ public:
 	bool get_row_value_txt(const std::string& table, const std::string& col, const int row,
 		std::string& value);
 
+	// Получить все значения-числа из указанного столбца.
+	int get_column_values_int(const std::string& table, const std::string& col, vector_int& values);
+
+	// Получить все значения-строки из указанного столбца.
+	int get_column_values_txt(const std::string& table, const std::string& col, vector_str& values);
+
 	// Ищем строку, содержащую переданное значение в указанном столбце.
 	// Если находим, возвращаем значение-число из той же строки, но из второго указанного столбца.
 	bool get_corresp_col_value_int(const std::string& table,

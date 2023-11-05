@@ -12,8 +12,26 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	commands["login"]	  = CommandType::Login;
 	commands["get"]		  = CommandType::Get;
 	commands["add"]		  = CommandType::Add;
-	commands["edit"]	  = CommandType::Edit;
-	commands["delete"]	  = CommandType::Delete;
+	commands["set"]		  = CommandType::Set;
+	commands["del"]		  = CommandType::Del;
+
+	get_requests["fullname"]	= GetRequest::Fullname;
+	get_requests["userlist"]	= GetRequest::UserList;
+	get_requests["tasklist"]	= GetRequest::TaskList;
+	get_requests["statuslist"]	= GetRequest::StatusList;
+	get_requests["typelist"]	= GetRequest::TypeList;
+	get_requests["taskdata"]	= GetRequest::TaskData;
+		
+	add_requests["user"] = AddRequest::User;
+	add_requests["task"] = AddRequest::Task;
+	
+	set_requests["password"] = SetRequest::Password;
+	set_requests["usertype"] = SetRequest::UserType;
+	set_requests["taskstatus"] = SetRequest::TaskStatus;
+	set_requests["taskuser"] = SetRequest::TaskUser;
+		
+	del_requests["user"] = DelRequest::User;
+	del_requests["task"] = DelRequest::Task;
 
 	session_number = 0;
 

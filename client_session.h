@@ -17,25 +17,62 @@ using namespace nlohmann::literals;
 
 // Виды ошибок в запросе от клиента.
 enum class RequestError {
-	ParseError,
-	IsNull,
-	WrongType, // Неверный тип данных в запросе.
-	NoCommand, // Нельзя определить тип запроса
-	UnknownCommand, // Неизвестный тип запроса
-	BadParameters // Что-то не так с параметрами
+	ParseError = 0,		// Невозможно распарсить запрос в json.
+	IsNull = 1,			// Получен пустой запрос.
+	NotObject = 2,		// Данные в запросе не являются json объектом.
+	NoCommand = 3,		// Нельзя определить тип запроса.
+	UnknownCommand = 4, // Неизвестный тип запроса.
+	NoParameter = 5,	// Необходимый параметр не найден в запросе.
+	BadValue = 6,		// Параметр имеет некорректное значение.
+	NotLogged = 7,		// Запрос не может быть обработан, т.к. пользователь ещё не залогинен в сессии.
+	NoPermission = 8	// У пользователя не хватает прав на выполнение данного запроса.
 };
 
 // Виды команд от клиента.
 enum class CommandType {
-	Unknown,	// Неизвестный серверу тип команды.
-	Test,		// Тестовый запрос для проверки связи.
-	Closedown,	// Сессия будет завершена.
-	Shutdown,	// Запрос на выключение сервера.
-	Login,		// Логин пользователя в системе.
-	Get,		// Получение данных из базы.
-	Add,		// Добавление данных в базу.
-	Edit,		// Изменение значения в базе.
-	Delete		// Удаление данных из базы.
+	Unknown = 0,	// Неизвестный серверу тип команды.
+	Test = 1,		// Тестовый запрос для проверки связи.
+	Login = 2,		// Логин пользователя в системе.
+	Closedown = 3,	// Сессия будет завершена.
+	Shutdown = 4,	// Запрос на выключение сервера.
+	Get = 5,		// Получение данных из базы.
+	Add = 6,		// Добавление данных в базу.
+	Set = 7,		// Изменение значения в базе.
+	Del = 8			// Удаление данных из базы.
+};
+
+// Виды запросов на получение данных.
+enum class GetRequest {
+	Unknown = 0,	// Неизвестный тип запроса.
+	Fullname = 1,	// Узнать ФИО пользователя.
+	UserList = 2,	// Получить список id всех пользователей.
+	TaskList = 3,	// Получить список id всех задач.
+	StatusList = 4,	// Получить список статусов задач с описанием.
+	TypeList = 5,	// Получить список типов пользователей с описанием.
+	TaskData = 6	// Получить данные конкретной задачи.
+};
+
+// Виды запросов на добавление данных.
+enum class AddRequest {
+	Unknown = 0,	// Неизвестный тип запроса.
+	User = 1,		// Добавить нового пользователя.
+	Task = 2		// Добавить задачу.
+};
+
+// Виды запросов на изменение данных.
+enum class SetRequest {
+	Unknown = 0,	// Неизвестный тип запроса.
+	Password = 1,	// Изменить пароль пользователя.
+	UserType = 2,	// Изменить тип пользователя.
+	TaskStatus = 3,	// Изменить статус задачи.
+	TaskUser = 4	// Назначить пользователя на задачу.
+};
+
+// Виды запросов на удаление данных.
+enum class DelRequest {
+	Unknown = 0,	// Неизвестный тип запроса.
+	User = 1,		// Удалить пользователя.
+	Task = 2		// Удалить задачу.
 };
 
 class TaskServer;
@@ -102,16 +139,44 @@ private: // methods
 	void handle_add();
 
 	// Обработка запроса на изменение данных.
-	void handle_edit();
+	void handle_set();
 
 	// Обработка запроса на удаление данных.
-	void handle_delete();
+	void handle_del();
 
 	// Сообщить клиенту об ошибке в запросе.
 	void reply_error(RequestError request_error);
 
 	// Ответ клиенту на запрос.
 	void reply_request(CommandType command_type);
+
+	void get_fullname();
+
+	void get_userlist();
+
+	void get_tasklist();
+
+	void get_statuslist();
+
+	void get_typelist();
+
+	void get_taskdata();
+
+	void add_user();
+
+	void add_task();
+
+	void set_password();
+
+	void set_usertype();
+
+	void set_taskstatus();
+
+	void set_taskdata();
+
+	void del_user();
+
+	void del_task();
 
 private: // data
 	tcp::socket socket_;
@@ -133,7 +198,7 @@ private: // data
 	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
 
 	json client_request; // Запрос, который находится в обработке.
-	json server_reply;   // Ответ клиенту от сервера, если не было ошибки в запросе.
+	json server_reply;   // Ответ клиенту от сервера.
 };
 
 using session_shared = std::shared_ptr<ClientSession>;

@@ -64,6 +64,12 @@ bool RequestManager::get_fio_by_user_id(const int user_id, vector_str& fio)
         std::to_string(user_id), fio);
 }
 
+// Получить список всех id пользователей.
+int RequestManager::get_user_id_list(vector_int& id_list)
+{
+    return data_storage_ptr->get_column_values_int("Users", "user_unique_id", id_list);
+}
+
 // Узнать пароль пользователя по user_unique_id.
 bool RequestManager::get_password_by_user_id(const int user_id, std::string& password)
 {

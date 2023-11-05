@@ -68,3 +68,9 @@ bool RequestManager::get_task_data_by_task_id(const int task_id, vector_str& tas
     return data_storage_ptr->get_corresp_columns_txt_values("Tasks", "task_unique_id", target_columns,
                                                             std::to_string(task_id), task_data);
 }
+
+// Получить список всех id задач.
+int RequestManager::get_task_id_list(vector_int& id_list)
+{
+    return data_storage_ptr->get_column_values_int("Tasks", "task_unique_id", id_list);
+}

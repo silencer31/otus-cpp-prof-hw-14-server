@@ -49,6 +49,9 @@ public:
 	// Получить ФИО пользователя по user_unique_id.
 	bool get_fio_by_user_id(const int user_id, vector_str& fio);
 
+	// Получить список всех id пользователей.
+	int get_user_id_list(vector_int& id_list);
+
 // ***** Получаем разные данные, связанные с задачами *****
 
 	// Узнать наибольший id задач.
@@ -65,6 +68,9 @@ public:
 
 	// Получить данные указанной задачи. Срок исполнения, название, описание.
 	bool get_task_data_by_task_id(const int task_id, vector_str& task_data);
+
+	// Получить список всех id задач.
+	int get_task_id_list(vector_int& id_list);
 
 // ***** Добавляем в базу данных *****
 	// Добавить нового пользователя.

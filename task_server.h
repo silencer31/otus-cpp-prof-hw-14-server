@@ -9,7 +9,10 @@ using boost::asio::ip::tcp;
 using session_map = std::map<int, session_shared>;
 
 using command_map = std::map<std::string, CommandType>;
-
+using get_req_map = std::map<std::string, GetRequest>;
+using add_req_map = std::map<std::string, AddRequest>;
+using set_req_map = std::map<std::string, SetRequest>;
+using del_req_map = std::map<std::string, DelRequest>;
 
 class TaskServer : public std::enable_shared_from_this<TaskServer>
 {
@@ -23,8 +26,28 @@ public:
 	void close_session(int session_id); // Закрытие сессии.
 
 	// Получаем тип команды в запросе от клиента или Unknown, если такой команды нет.
-	CommandType get_command_type(const std::string& comm) {
+	CommandType command_type(const std::string& comm) {
 		return ((commands.find(comm) == commands.end()) ? CommandType::Unknown : commands[comm]);
+	}
+
+	// Получаем тип get запроса.
+	GetRequest get_request_type(const std::string& comm) {
+		return ((get_requests.find(comm) == get_requests.end()) ? GetRequest::Unknown : get_requests[comm]);
+	}
+
+	// Получаем тип add запроса.
+	AddRequest add_request_type(const std::string& comm) {
+		return ((add_requests.find(comm) == add_requests.end()) ? AddRequest::Unknown : add_requests[comm]);
+	}
+
+	// Получаем тип set запроса.
+	SetRequest set_request_type(const std::string& comm) {
+		return ((set_requests.find(comm) == set_requests.end()) ? SetRequest::Unknown : set_requests[comm]);
+	}
+
+	// Получаем тип del запроса.
+	DelRequest del_request_type(const std::string& comm) {
+		return ((del_requests.find(comm) == del_requests.end()) ? DelRequest::Unknown : del_requests[comm]);
 	}
 
 private: // methods
@@ -36,7 +59,11 @@ private: // data
 	const request_manager_shared request_manager_ptr;
 
 	// Команды от клиента, которые готов обрабатывать сервер.
-	command_map commands; // Возможно, лучше перенести это в класс ClientSession и сделать статичным параметром.
+	command_map commands;
+	get_req_map get_requests;
+	add_req_map add_requests;
+	set_req_map set_requests;
+	del_req_map del_requests;
 
 	session_map sessions; // Коллекция сессий.
 	int session_number;   // Кол-во сессий.

@@ -138,6 +138,60 @@ bool DataStorage::get_row_value_txt(const std::string& table, const std::string&
     return value_found;
 }
 
+// Получить все значения-числа из указанного столбца.
+int DataStorage::get_column_values_int(const std::string& table, const std::string& col, vector_int& values)
+{
+    const std::string request = "SELECT " + col + " FROM " + table;
+
+    data_mutex.lock();
+
+    if (SQLITE_OK != sqlite3_prepare_v2(handle, request.c_str(), -1, &stmt, nullptr)) {
+        std::cout << "sqlite prepare error " << sqlite3_errmsg(handle) << std::endl;
+        data_mutex.unlock();
+        return 0;
+    }
+   
+    int number = 0;
+
+    while (SQLITE_ROW == sqlite3_step(stmt)) {
+        values.push_back(sqlite3_column_int(stmt, 0));
+        ++number;
+    }
+
+    sqlite3_finalize(stmt);
+
+    data_mutex.unlock();
+
+    return number;
+}
+
+// Получить все значения-строки из указанного столбца.
+int DataStorage::get_column_values_txt(const std::string& table, const std::string& col, vector_str& values)
+{
+    const std::string request = "SELECT " + col + " FROM " + table;
+
+    data_mutex.lock();
+
+    if (SQLITE_OK != sqlite3_prepare_v2(handle, request.c_str(), -1, &stmt, nullptr)) {
+        std::cout << "sqlite prepare error " << sqlite3_errmsg(handle) << std::endl;
+        data_mutex.unlock();
+        return 0;
+    }
+
+    int number = 0;
+
+    while (SQLITE_ROW == sqlite3_step(stmt)) {
+        values.push_back((char*)sqlite3_column_text(stmt, 0));
+        ++number;
+    }
+
+    sqlite3_finalize(stmt);
+
+    data_mutex.unlock();
+
+    return number;
+}
+
 // Ищем строку, содержащую переданное значение-текст в указанном столбце.
 // Если находим, возвращаем значение-число из той же строки, но из второго указанного столбца.
 bool DataStorage::get_corresp_col_value_int(const std::string& table,

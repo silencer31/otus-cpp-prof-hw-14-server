@@ -1,4 +1,4 @@
-#include "client_session.h"
+//#include "client_session.h"
 #include "task_server.h"
 
 // Ответ клиенту на запрос.
@@ -31,11 +31,11 @@ void ClientSession::reply_request(CommandType command_type)
 	case CommandType::Add:
 		server_reply["command"] = "add";
 		break;
-	case CommandType::Edit:
-		server_reply["command"] = "edit";
+	case CommandType::Set:
+		server_reply["command"] = "set";
 		break;
-	case CommandType::Delete:
-		server_reply["command"] = "delete";
+	case CommandType::Del:
+		server_reply["command"] = "del";
 		break;
 	default:
 		break;

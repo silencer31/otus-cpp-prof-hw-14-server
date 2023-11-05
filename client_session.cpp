@@ -1,4 +1,4 @@
-#include "client_session.h"
+//#include "client_session.h"
 #include "task_server.h"
 
 #include <iostream>
@@ -19,6 +19,8 @@ void ClientSession::do_read()
 
 				return;
 			}
+
+			server_reply.clear(); // Очищаем предыдущий ответ.
 
 			std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
 
@@ -44,7 +46,7 @@ void ClientSession::do_read()
 
 			// Проверка, является ли объектом.
 			if (!jdata.is_object()) {
-				reply_error(RequestError::WrongType);
+				reply_error(RequestError::NotObject);
 				return;
 			}
 
