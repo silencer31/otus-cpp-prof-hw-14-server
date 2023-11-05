@@ -156,9 +156,9 @@ private: // methods
 
 	void get_tasklist();
 
-	void get_statuslist();
-
 	void get_typelist();
+
+	void get_statuslist();
 
 	void get_taskdata();
 

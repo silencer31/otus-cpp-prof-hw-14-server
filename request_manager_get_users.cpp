@@ -70,6 +70,12 @@ int RequestManager::get_user_id_list(vector_int& id_list)
     return data_storage_ptr->get_column_values_int("Users", "user_unique_id", id_list);
 }
 
+// ѕолучить список номеров типов пользовател€ с описанием. 
+int RequestManager::get_type_description_lists(vector_int& numbers, vector_str& descriptions)
+{
+
+}
+
 // ”знать пароль пользовател€ по user_unique_id.
 bool RequestManager::get_password_by_user_id(const int user_id, std::string& password)
 {

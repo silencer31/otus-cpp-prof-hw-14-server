@@ -36,7 +36,7 @@ void ClientSession::get_fullname()
 void ClientSession::get_userlist()
 {
 	vector_int id_list;
-	id_list.reserve(10);
+	id_list.reserve(20);
 
 	int size = request_manager_ptr->get_user_id_list(id_list);
 
@@ -58,6 +58,36 @@ void ClientSession::get_userlist()
 
 void ClientSession::get_tasklist()
 {
+	vector_int id_list;
+	id_list.reserve(30);
+
+	int size = request_manager_ptr->get_task_id_list(id_list);
+
+	server_reply["result"] = (size > 0);
+
+	if (size == 0) {
+		reply_request(CommandType::Get);
+		return;
+	}
+
+	id_list.shrink_to_fit();
+
+	json j_values = json::array(id_list);
+
+	reply_request["values"] = j_values;
+
+	reply_request(CommandType::Get);
+}
+
+void ClientSession::get_typelist()
+{
+	vector_int type_list;
+	vector_str description_list;
+
+	type_list.reserve(3);
+	description_list.reserve(3);
+
+
 
 	server_reply["result"] = result;
 
@@ -70,19 +100,6 @@ void ClientSession::get_tasklist()
 }
 
 void ClientSession::get_statuslist()
-{
-
-	server_reply["result"] = result;
-
-	if (!result) {
-		reply_request(CommandType::Get);
-		return;
-	}
-
-	reply_request(CommandType::Get);
-}
-
-void ClientSession::get_typelist()
 {
 
 	server_reply["result"] = result;

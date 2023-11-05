@@ -52,6 +52,9 @@ public:
 	// ѕолучить список всех id пользователей.
 	int get_user_id_list(vector_int& id_list);
 
+	// ѕолучить список номеров типов пользовател€ с описанием. 
+	int get_type_description_lists(vector_int& numbers, vector_str& descriptions);
+
 // ***** ѕолучаем разные данные, св€занные с задачами *****
 
 	// ”знать наибольший id задач.
