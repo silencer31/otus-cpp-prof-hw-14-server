@@ -74,3 +74,10 @@ int RequestManager::get_task_id_list(vector_int& id_list)
 {
     return data_storage_ptr->get_column_values_int("Tasks", "task_unique_id", id_list);
 }
+
+// Получить список номеров статусов задач с описанием. 
+int RequestManager::get_status_description_lists(vector_int& numbers, vector_str& descriptions)
+{
+    return data_storage_ptr->get_pairs_int_txt("TaskStatuses", "status_type_number", "status_type_description",
+        numbers, descriptions);
+}

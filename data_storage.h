@@ -32,6 +32,14 @@ public:
 		}
 	}
 
+	void lock_db() {
+		data_mutex.lock();
+	}
+
+	void unlock_db() {
+		data_mutex.unlock();
+	}
+
 	// Открытие файла с базой данных.
 	bool init_database();
 
@@ -60,6 +68,10 @@ public:
 
 	// Получить все значения-строки из указанного столбца.
 	int get_column_values_txt(const std::string& table, const std::string& col, vector_str& values);
+
+	// Получить все значения-числа из столбца num_col и значения-строки из столбца txt_col.
+	int get_pairs_int_txt(const std::string& table, const std::string& num_col, const std::string& txt_col,
+		vector_int& numbers, vector_str& strings);
 
 	// Ищем строку, содержащую переданное значение в указанном столбце.
 	// Если находим, возвращаем значение-число из той же строки, но из второго указанного столбца.

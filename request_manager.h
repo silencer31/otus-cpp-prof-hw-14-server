@@ -26,6 +26,14 @@ public:
 
 	~RequestManager() = default;
 
+	void lock_access() {
+		data_storage_ptr->lock_db();
+	}
+
+	void free_access() {
+		data_storage_ptr->lock_db();
+	}
+
 // ***** Получаем разные данные, связанные с пользователями *****
 
 	// Узнать, есть ли такой логин в базе.
@@ -74,6 +82,9 @@ public:
 
 	// Получить список всех id задач.
 	int get_task_id_list(vector_int& id_list);
+
+	// Получить список номеров статусов задач с описанием. 
+	int get_status_description_lists(vector_int& numbers, vector_str& descriptions);
 
 // ***** Добавляем в базу данных *****
 	// Добавить нового пользователя.

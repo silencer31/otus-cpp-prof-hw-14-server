@@ -73,7 +73,8 @@ int RequestManager::get_user_id_list(vector_int& id_list)
 // ѕолучить список номеров типов пользовател€ с описанием. 
 int RequestManager::get_type_description_lists(vector_int& numbers, vector_str& descriptions)
 {
-
+    return data_storage_ptr->get_pairs_int_txt("UserTypes", "user_type_number", "user_type_description",
+        numbers, descriptions);
 }
 
 // ”знать пароль пользовател€ по user_unique_id.
