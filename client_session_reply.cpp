@@ -23,7 +23,7 @@ void ClientSession::reply_request(CommandType command_type)
 		break;
 	case CommandType::Login:
 		server_reply["command"] = "login";
-		server_reply["result"] = user_logged;
+		server_reply["result"] = (logged_user_type != UserType::Unknown);
 		break;
 	case CommandType::Get:
 		server_reply["command"] = "get";

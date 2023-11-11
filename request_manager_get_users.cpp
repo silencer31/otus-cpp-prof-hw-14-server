@@ -20,7 +20,8 @@ int RequestManager::get_user_id_by_login(const std::string& username)
     int num_value;
 
     // Узнаем user_unique_id в таблице Users по логину пользователя.
-    if ( data_storage_ptr->get_corresp_col_value_int("Users", "user_unique_login", "user_unique_id", username, num_value)) {
+    if ( data_storage_ptr->get_corresp_col_value_int("Users", "user_unique_login", "user_unique_id",
+        username, num_value)) {
         return num_value;
     }
 
@@ -33,7 +34,8 @@ int RequestManager::get_user_type_by_user_id(const int user_id)
     int num_value;
 
     // Узнаем user_type_number в таблице Security по логину user_unique_id.
-    if (data_storage_ptr->get_corresp_col_value_int("Security", "user_unique_id", "user_type_number", std::to_string(user_id), num_value)) {
+    if (data_storage_ptr->get_corresp_col_value_int("Security", "user_unique_id", "user_type_number",
+        std::to_string(user_id), num_value)) {
         return num_value;
     }
 
@@ -53,6 +55,23 @@ bool RequestManager::get_user_type_name_by_user_id(const int user_id, std::strin
     // Узнаем user_type_description в таблице UserTypes по user_type_number. 
     return data_storage_ptr->get_corresp_col_value_txt("Security", "user_type_number", "user_type_description",
         std::to_string(user_type_value), type_name);
+}
+
+// Получить тип пользователя из числа.
+UserType RequestManager::get_user_type_from_int(const int user_type)
+{
+    switch (user_type) {
+    case 0:
+        return UserType::Unknown;
+    case 1:
+        return UserType::Administrator;
+    case 2:
+        return UserType::Operator;
+    case 3:
+        return UserType::User;
+    default:
+        return UserType::Unknown;
+    }
 }
 
 // Получить ФИО пользователя по user_unique_id.

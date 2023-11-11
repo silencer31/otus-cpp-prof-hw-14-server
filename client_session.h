@@ -25,7 +25,8 @@ enum class RequestError {
 	NoParameter = 5,	// Необходимый параметр не найден в запросе.
 	BadValue = 6,		// Параметр имеет некорректное значение.
 	NotLogged = 7,		// Запрос не может быть обработан, т.к. пользователь ещё не залогинен в сессии.
-	NoPermission = 8	// У пользователя не хватает прав на выполнение данного запроса.
+	AlreadyLogged = 8,	// Нельзя дважды логироваться в рамках одной сессии.
+	NoPermission = 9	// У пользователя не хватает прав на выполнение данного запроса.
 };
 
 // Виды команд от клиента.
@@ -92,8 +93,7 @@ public:
 		, task_server_ptr(ts_ptr)
 		, request_manager_ptr(rm_ptr)
 		, logged_user_id(0)
-		, logged_user_type(UserType::User)
-		, user_logged(false)
+		, logged_user_type(UserType::Unknown)
 		, shutdown_session_flag(false)
 	{}
 
@@ -193,7 +193,6 @@ private: // data
 
 	int logged_user_id; // Идентификатор залогиненного пользователя. 
 	UserType logged_user_type; // Тип залогиненного пользователя.
-	bool user_logged; // Флаг, что пользователь был успешно залогинен. Иначе не даём изменить базу.
 
 	bool shutdown_session_flag; // Флаг, что завершается работа сессии.
 

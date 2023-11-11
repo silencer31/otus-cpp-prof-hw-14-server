@@ -1,7 +1,7 @@
 #include "request_manager.h"
 
 // ”знать, есть ли такой логин в базе.
-bool RequestManager::check_login(const std::string& login)
+bool RequestManager::login_present(const std::string& login)
 {
     return data_storage_ptr->get_txt_value_presence("Users", "user_unique_login", login);
 }

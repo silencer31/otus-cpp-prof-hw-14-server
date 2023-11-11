@@ -85,7 +85,7 @@ public:
 
 	// Перебираем все строки, содержащие переданное значение в указанном столбце.
 	// Если находим, берём значение-число из той же строки, но из второго указанного столбца и добавляем его в вектор чисел.
-	void get_corresp_col_int_vector(const std::string& table,
+	int get_corresp_col_int_vector(const std::string& table,
 		const std::string& find_col, const std::string& target_col,
 		const std::string& find_value, vector_int& values);
 
@@ -97,7 +97,13 @@ public:
 		const std::string& find_value, std::string& get_value);
 
 	// Ищем строку, содержащую переданное значение в указанном столбце.
-	// Собираем значения из переданных столбцов в той же строке.
+	// Собираем значения-числа из переданных столбцов в той же строке.
+	bool get_corresp_columns_int_values(const std::string& table,
+		const std::string& find_col, const vector_str& target_columns,
+		const std::string& find_value, vector_int& values);
+
+	// Ищем строку, содержащую переданное значение в указанном столбце.
+	// Собираем значения-строки из переданных столбцов в той же строке.
 	bool get_corresp_columns_txt_values(const std::string& table,
 		const std::string& find_col, const vector_str& target_columns,
 		const std::string& find_value, vector_str& values);

@@ -10,7 +10,7 @@ void ClientSession::handle_request()
 	CommandType comm_type = task_server_ptr->command_type(client_request["command"]);
 
 	// ƒл€ запросов работы с данными пользователь должен быть залогинен .
-	if ( comm_type > CommandType::Login && !user_logged) {
+	if ( (comm_type > CommandType::Login) && (logged_user_type != UserType::Unknown)) {
 		reply_error(RequestError::NotLogged);
 		return;
 	}
@@ -82,6 +82,12 @@ void ClientSession::handle_shutdown()
 // ќбработка запроса проверки пары логин/пароль.
 void ClientSession::handle_login()
 {
+	// ѕроверка был ли уже залогинен пользователь в рамках данной сессии.
+	if (logged_user_type != UserType::Unknown) {
+		reply_error(RequestError::AlreadyLogged);
+		return;
+	}
+
 	// ѕроверка наличи€ в запросе пол€ username.
 	if (!client_request.contains("username")) {
 		server_reply["parameter"] = "username";
@@ -97,7 +103,7 @@ void ClientSession::handle_login()
 	}
 
 	// ѕровер€ем, есть ли такой логин в базе.
-	if (!request_manager_ptr->check_login(client_request["username"])) {
+	if (!request_manager_ptr->login_present(client_request["username"])) {
 		server_reply["details"] = "User is not registered";
 		reply_request(CommandType::Login);
 		return;
@@ -130,8 +136,7 @@ void ClientSession::handle_login()
 	}
 	
 	// ≈сли всЄ прошло успешно, запоминаем залогиненного пользовател€ сессии.
-	logged_user_type = static_cast<UserType>(user_type_number);
-	user_logged = true;
+	logged_user_type = request_manager_ptr->get_user_type_from_int(user_type_number);
 		
 	server_reply["user_id"] = logged_user_id;
 	server_reply["user_type"] = user_type_number;

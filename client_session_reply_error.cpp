@@ -35,6 +35,9 @@ void ClientSession::reply_error(RequestError request_error)
 	case RequestError::NotLogged:
 		server_reply["type"] = "not_logged";
 		break;
+	case RequestError::AlreadyLogged:
+		server_reply["type"] = "already_logged";
+		break;
 	case RequestError::NoPermission:
 		server_reply["type"] = "no_permission";
 		break;

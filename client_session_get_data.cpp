@@ -13,10 +13,12 @@ void ClientSession::get_fullname()
 		reply_error(RequestError::BadValue);
 		return;
 	}
-
-	vector_str fio;
+		
 	int user_id = static_cast<int>(client_request["user_id"]);
 	
+	vector_str fio;
+	fio.reserve(3);
+
 	request_manager_ptr->lock_access();
 	bool result = request_manager_ptr->get_fio_by_user_id(user_id, fio);
 	request_manager_ptr->free_access();
@@ -35,8 +37,16 @@ void ClientSession::get_fullname()
 	reply_request(CommandType::Get);
 }
 
+// 
 void ClientSession::get_userlist()
 {
+	// “олько администратор может запросить список id всех пользователей.
+	if (logged_user_type != UserType::Administrator) {
+		server_reply["details"] = "Insufficient access level";
+		reply_error(RequestError::NoPermission);
+		return;
+	}
+
 	vector_int id_list;
 	id_list.reserve(20);
 
@@ -60,13 +70,32 @@ void ClientSession::get_userlist()
 	reply_request(CommandType::Get);
 }
 
+// ѕолучить список id задач
 void ClientSession::get_tasklist()
 {
+	int user_id = -1;
+
+	// ≈сли передан id пользовател€, возвращаем список задач только дл€ него.
+	if (client_request.contains("user_id")) {
+		if (client_request["user_id"].is_number_integer()) {
+			user_id = static_cast<int>(client_request["user_id"]);
+		}
+		else {
+			server_reply["parameter"] = "user_id";
+			reply_error(RequestError::BadValue);
+			return;
+		}
+	}
+
 	vector_int id_list;
 	id_list.reserve(30);
 
 	request_manager_ptr->lock_access();
-	int size = request_manager_ptr->get_task_id_list(id_list);
+
+	int size = ((user_id >= 0)
+		? request_manager_ptr->get_task_id_list(id_list)
+		: request_manager_ptr->get_task_ids_by_user_id(user_id, id_list));
+
 	request_manager_ptr->free_access();
 
 	server_reply["result"] = (size > 0);
@@ -78,13 +107,14 @@ void ClientSession::get_tasklist()
 
 	id_list.shrink_to_fit();
 
-	json j_values = json::array(id_list);
+	//json j_values = json::array(id_list);
 
-	reply_request["id_list"] = j_values;
+	reply_request["id_list"] = json::array(id_list);
 
 	reply_request(CommandType::Get);
 }
 
+// ѕолучить номера типов пользователей с описанием.
 void ClientSession::get_typelist()
 {
 	vector_int type_list;
@@ -113,6 +143,7 @@ void ClientSession::get_typelist()
 	reply_request(CommandType::Get);
 }
 
+// ѕолучить номера статусов задач с описанием.
 void ClientSession::get_statuslist()
 {
 	vector_int status_list;
@@ -141,8 +172,32 @@ void ClientSession::get_statuslist()
 	reply_request(CommandType::Get);
 }
 
+// ѕолучить данные одной задачи
 void ClientSession::get_taskdata()
 {
+	if (!client_request.contains("task_id")) {
+		server_reply["parameter"] = "task_id";
+		reply_error(RequestError::NoParameter);
+		return;
+	}
+
+	if (!client_request["task_id"].is_number_integer()) {
+		server_reply["parameter"] = "task_id";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	int task_id = static_cast<int>(client_request["task_id"]);
+
+	vector_int user_and_status;
+	vector_str time_name_description;
+
+	user_status.reserve(2);
+	time_name_description.reserve(3);
+
+	request_manager_ptr->lock_access();
+	bool result = request_manager_ptr->get_task_data_by_task_id(task_id, user_and_status, time_name_description);
+	request_manager_ptr->free_access();
 
 	server_reply["result"] = result;
 
@@ -150,6 +205,13 @@ void ClientSession::get_taskdata()
 		reply_request(CommandType::Get);
 		return;
 	}
+
+	server_reply["user_id"] = user_and_status.at(0);
+	server_reply["status"] = user_and_status.at(1);
+
+	server_reply["deadline"] = time_name_description.at(0);
+	server_reply["name"] = time_name_description.at(1);
+	server_reply["description"] = time_name_description.at(2);
 
 	reply_request(CommandType::Get);
 }

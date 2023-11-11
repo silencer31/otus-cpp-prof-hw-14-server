@@ -6,11 +6,6 @@
 bool RequestManager::add_user(UserType user_type, const std::string& login, const std::string& password,
 	const std::string& sname, const std::string& fname, const std::string& patr)
 {
-	// Проверяем, есть ли уже такой логин в базе.
-	if (check_login(login)) {
-		return false;
-	}
-
 	int user_id = get_user_id_max_number();
 
 	user_id = (user_id < 0) ? 1 : (user_id + 1);
@@ -34,7 +29,7 @@ bool RequestManager::add_user(UserType user_type, const std::string& login, cons
 		+ "'" + password + "'" +  ")";
 
 	// Добавляем новую строку со всеми значениями в Security.
-	return data_storage_ptr->insert_row("Users", s_values);
+	return data_storage_ptr->insert_row("Security", s_values);
 }
 
 // Добавить новую задачу.

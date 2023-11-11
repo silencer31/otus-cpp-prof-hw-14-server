@@ -3,12 +3,14 @@
 #include "data_storage.h"
 
 enum class UserType {
+	Unknown = 0,
 	Administrator = 1,
 	Operator = 2,
 	User = 3
 };
 
 enum class TaskStatus {
+	Unknown = 0,
 	NotAppointed = 1,
 	Appointed = 2,
 	InProgress = 3,
@@ -37,7 +39,7 @@ public:
 // ***** Получаем разные данные, связанные с пользователями *****
 
 	// Узнать, есть ли такой логин в базе.
-	bool check_login(const std::string& login);
+	bool login_present(const std::string& login);
 
 	// Проверка пароля.
 	bool check_password(const int user_id, const std::string& password);
@@ -53,6 +55,9 @@ public:
 
 	// Текстовое название типа пользователя. 
 	bool get_user_type_name_by_user_id(const int user_id, std::string& type_name);
+
+	// Получить тип пользователя из числа.
+	UserType get_user_type_from_int(const int user_type);
 
 	// Получить ФИО пользователя по user_unique_id.
 	bool get_fio_by_user_id(const int user_id, vector_str& fio);
@@ -71,14 +76,17 @@ public:
 	// Узнать status_type_number по task_unique_id. Число, соответствующее статусу задачи.
 	int get_status_type_by_task_id(const int task_id);
 
+	// Получить статус задачи из числа.
+	TaskStatus get_status_type_from_int(const int status_type);
+
 	// Текстовое название состояния/статуса задачи.
 	bool get_status_name_by_task_id(const int task_id, std::string& status_name);
 
 	// Получить перечень идентификаторов задач для одного user_unique_id. Список задач одного пользователя. 
-	bool get_task_ids_by_user_id(const int user_id, vector_int& task_ids);
+	int get_task_ids_by_user_id(const int user_id, vector_int& task_ids);
 
-	// Получить данные указанной задачи. Срок исполнения, название, описание.
-	bool get_task_data_by_task_id(const int task_id, vector_str& task_data);
+	// Получить данные указанной задачи. id пользователя и статус. Срок исполнения, название, описание.
+	bool get_task_data_by_task_id(const int task_id, vector_int& user_and_status, vector_str& time_name_description);
 
 	// Получить список всех id задач.
 	int get_task_id_list(vector_int& id_list);
