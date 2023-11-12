@@ -1,5 +1,6 @@
 #include "task_server.h"
 
+// Получить ФИО пользователя по user id.
 void ClientSession::get_fullname()
 {
 	if (!client_request.contains("user_id")) {
@@ -16,28 +17,36 @@ void ClientSession::get_fullname()
 		
 	int user_id = static_cast<int>(client_request["user_id"]);
 	
-	vector_str fio;
-	fio.reserve(3);
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 
-	request_manager_ptr->lock_access();
-	bool result = request_manager_ptr->get_fio_by_user_id(user_id, fio);
-	request_manager_ptr->free_access();
-
-	server_reply["result"] = result;
-
-	if (!result) {
-		reply_request(CommandType::Get);
+	// Проверяем, есть ли в базе пользователь с таким id.
+	if (request_manager_ptr->get_user_type_by_user_id(user_id) < 0) {
+		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+		server_reply["parameter"] = "user_id";
+		server_reply["details"] = "Provided user id is not found in data base";
+		reply_error(RequestError::BadValue);
 		return;
 	}
 
-	server_reply["second"] = fio.at(0);
-	server_reply["first"] = fio.at(1);
-	server_reply["patronymic"] = fio.at(2);
+	vector_str fio;
+	fio.reserve(3);
+
+	
+	bool result = request_manager_ptr->get_fio_by_user_id(user_id, fio);
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
+	server_reply["result"] = result;
+
+	if (result) {
+		server_reply["second"] = fio.at(0);
+		server_reply["first"] = fio.at(1);
+		server_reply["patronymic"] = fio.at(2);
+	}
 
 	reply_request(CommandType::Get);
 }
 
-// 
+// Получить список всех id пользователей.
 void ClientSession::get_userlist()
 {
 	// Только администратор может запросить список id всех пользователей.
@@ -50,27 +59,21 @@ void ClientSession::get_userlist()
 	vector_int id_list;
 	id_list.reserve(20);
 
-	request_manager_ptr->lock_access();
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 	int size = request_manager_ptr->get_user_id_list(id_list);
-	request_manager_ptr->free_access();
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
 
-	if (size == 0) {
-		reply_request(CommandType::Get);
-		return;
+	if (size > 0) {
+		id_list.shrink_to_fit();
+		reply_request["id_list"] = json::array(id_list);
 	}
-
-	id_list.shrink_to_fit();
-
-	json j_values = json::array(id_list);
-
-	reply_request["id_list"] = j_values;
 
 	reply_request(CommandType::Get);
 }
 
-// Получить список id задач
+// Если указан user_id, получить список его задач, а если не указан, то список всех задач. 
 void ClientSession::get_tasklist()
 {
 	int user_id = -1;
@@ -87,34 +90,37 @@ void ClientSession::get_tasklist()
 		}
 	}
 
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
+
+	// Проверяем, есть ли в базе пользователь с таким id.
+	if ((user_id > 0) && (request_manager_ptr->get_user_type_by_user_id(user_id) < 0)) {
+		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+		server_reply["parameter"] = "user_id";
+		server_reply["details"] = "Provided user id is not found in data base";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
 	vector_int id_list;
 	id_list.reserve(30);
-
-	request_manager_ptr->lock_access();
 
 	int size = ((user_id >= 0)
 		? request_manager_ptr->get_task_id_list(id_list)
 		: request_manager_ptr->get_task_ids_by_user_id(user_id, id_list));
 
-	request_manager_ptr->free_access();
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
 
-	if (size == 0) {
-		reply_request(CommandType::Get);
-		return;
+	if (size > 0) {
+		id_list.shrink_to_fit();
+		reply_request["id_list"] = json::array(id_list);
 	}
-
-	id_list.shrink_to_fit();
-
-	//json j_values = json::array(id_list);
-
-	reply_request["id_list"] = json::array(id_list);
 
 	reply_request(CommandType::Get);
 }
 
-// Получить номера типов пользователей с описанием.
+// Получить список возможных типов пользователя и список с их описанием. 
 void ClientSession::get_typelist()
 {
 	vector_int type_list;
@@ -123,9 +129,9 @@ void ClientSession::get_typelist()
 	type_list.reserve(3);
 	description_list.reserve(3);
 
-	request_manager_ptr->lock_access();
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 	int size = request_manager_ptr->get_type_description_lists(type_list, description_list);
-	request_manager_ptr->free_access();
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
 
@@ -143,7 +149,7 @@ void ClientSession::get_typelist()
 	reply_request(CommandType::Get);
 }
 
-// Получить номера статусов задач с описанием.
+// Получить список возможных статусов задачи и список с их описанием.
 void ClientSession::get_statuslist()
 {
 	vector_int status_list;
@@ -152,9 +158,9 @@ void ClientSession::get_statuslist()
 	status_list.reserve(5);
 	description_list.reserve(5);
 
-	request_manager_ptr->lock_access();
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 	int size = request_manager_ptr->get_status_description_lists(status_list, description_list);
-	request_manager_ptr->free_access();
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
 
@@ -172,7 +178,7 @@ void ClientSession::get_statuslist()
 	reply_request(CommandType::Get);
 }
 
-// Получить данные одной задачи
+// Получить данные задачи по task id.
 void ClientSession::get_taskdata()
 {
 	if (!client_request.contains("task_id")) {
@@ -192,16 +198,17 @@ void ClientSession::get_taskdata()
 	vector_int user_and_status;
 	vector_str time_name_description;
 
-	user_status.reserve(2);
+	user_and_status.reserve(2);
 	time_name_description.reserve(3);
 
-	request_manager_ptr->lock_access();
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 	bool result = request_manager_ptr->get_task_data_by_task_id(task_id, user_and_status, time_name_description);
-	request_manager_ptr->free_access();
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = result;
 
 	if (!result) {
+		server_reply["details"] = "An error occured while getting task data";
 		reply_request(CommandType::Get);
 		return;
 	}

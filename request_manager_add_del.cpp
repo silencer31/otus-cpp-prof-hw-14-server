@@ -3,7 +3,7 @@
 #include <string>
 
 // Добавить нового пользователя.
-bool RequestManager::add_user(UserType user_type, const std::string& login, const std::string& password,
+int RequestManager::add_user(UserType user_type, const std::string& login, const std::string& password,
 	const std::string& sname, const std::string& fname, const std::string& patr)
 {
 	int user_id = get_user_id_max_number();
@@ -21,7 +21,7 @@ bool RequestManager::add_user(UserType user_type, const std::string& login, cons
 		
 	// Добавляем новую строку со всеми значениями в Users.
 	if (!data_storage_ptr->insert_row("Users", u_values)) {
-		return false;
+		return -1;
 	}
 
 	// Значения для столбцов таблицы Security
@@ -29,11 +29,11 @@ bool RequestManager::add_user(UserType user_type, const std::string& login, cons
 		+ "'" + password + "'" +  ")";
 
 	// Добавляем новую строку со всеми значениями в Security.
-	return data_storage_ptr->insert_row("Security", s_values);
+	return (data_storage_ptr->insert_row("Security", s_values) ? user_id : -1);
 }
 
 // Добавить новую задачу.
-bool RequestManager::add_task(const int user_id, const std::string& deadline,
+int RequestManager::add_task(const int user_id, const std::string& deadline,
 	const std::string& name, const std::string& description)
 {
 	int task_id = get_task_id_max_number();
@@ -49,7 +49,7 @@ bool RequestManager::add_task(const int user_id, const std::string& deadline,
 		+ t_4_val + "," + t_5_val + "," + t_6_val + ")";
 
 	// Добавляем новую строку со всеми значениями в Security.
-	return data_storage_ptr->insert_row("Tasks", t_values);
+	return (data_storage_ptr->insert_row("Tasks", t_values) ? task_id : -1);
 }
 
 // Удалить пользователя.
@@ -65,5 +65,5 @@ bool RequestManager::del_user(const int user_id)
 // Удалить задачу.
 bool RequestManager::del_task(const int task_id)
 {
-	return data_storage_ptr->delete_row("Taks", "task_unique_id", std::to_string(task_id));
+	return data_storage_ptr->delete_row("Tasks", "task_unique_id", std::to_string(task_id));
 }

@@ -9,3 +9,10 @@ bool RequestManager::set_task_status(const int task_id, TaskStatus task_status)
 		"task_unique_id", std::to_string(task_id));
 }
 
+// Изменить исполнителя задачи.
+bool RequestManager::set_task_user(const int task_id, const int user_id)
+{
+	return data_storage_ptr->set_value_with_clause("Tasks", "user_unique_id", std::to_string(user_id),
+		"task_unique_id", std::to_string(task_id));
+}
+

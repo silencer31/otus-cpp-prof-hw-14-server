@@ -150,33 +150,47 @@ private: // methods
 	// Ответ клиенту на запрос.
 	void reply_request(CommandType command_type);
 
+	// Получить ФИО пользователя по user id.
 	void get_fullname();
 
+	// Получить список всех id пользователей.
 	void get_userlist();
 
+	// Если указан user_id, получить список его задач, а если не указан, то список всех задач. 
 	void get_tasklist();
 
+	// Получить список возможных типов пользователя и список с их описанием. 
 	void get_typelist();
 
+	// Получить список возможных статусов задачи и список с их описанием. 
 	void get_statuslist();
 
+	// Получить данные задачи по task id.
 	void get_taskdata();
 
+	// Добавить нового пользователя в базу.
 	void add_user();
 
+	// Добавить новую задачу в базу.
 	void add_task();
 
-	void set_password();
-
-	void set_usertype();
-
-	void set_taskstatus();
-
-	void set_taskdata();
-
+	// Удалить пользователя из базы.
 	void del_user();
 
+	// Удалить задачу из базы.
 	void del_task();
+
+	// Установить новый пароль у пользователя.
+	void set_password();
+
+	// Изменить тип пользователя в базе.
+	void set_usertype();
+
+	// Установить новый статус задачи по task id.
+	void set_taskstatus();
+
+	// Назначить на задачу другого пользователя.
+	void set_taskuser();
 
 private: // data
 	tcp::socket socket_;

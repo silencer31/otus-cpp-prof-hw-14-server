@@ -225,7 +225,7 @@ void ClientSession::handle_set()
 		set_taskstatus();
 		break;
 	case SetRequest::TaskUser:
-		set_taskdata();
+		set_taskuser();
 		break;
 	default:
 		break;

@@ -5,7 +5,7 @@
 // Узнать наибольший id пользователя.
 int RequestManager::get_user_id_max_number()
 {
-    int id_value;
+    int id_value = 0;
 
     if (data_storage_ptr->get_column_max_int_value("Users", "user_unique_id", id_value)) {
         return id_value;

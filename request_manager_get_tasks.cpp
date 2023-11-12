@@ -5,7 +5,7 @@
 // Узнать наибольший id задач.
 int RequestManager::get_task_id_max_number()
 {
-    int id_value;
+    int id_value = 0;
 
     if (data_storage_ptr->get_column_max_int_value("Tasks", "task_unique_id", id_value)) {
         return id_value;
@@ -61,6 +61,19 @@ bool RequestManager::get_status_name_by_task_id(const int task_id, std::string& 
     // Узнаем status_type_description в таблице TaskStatuses по status_type_number. 
     return data_storage_ptr->get_corresp_col_value_txt("TaskStatuses", "status_type_number", "status_type_description",
                                                        std::to_string(status_type_value), status_name);
+}
+
+// Получить id текущего пользователя задачи.
+int RequestManager::get_task_user_id_by_task_id(const int task_id)
+{
+    int num_value;
+
+    // Узнаем task_unique_id в таблице Tasks по user_unique_id.
+    if (data_storage_ptr->get_corresp_col_value_int("Tasks", "task_unique_id", "user_unique_id", std::to_string(task_id), num_value)) {
+        return num_value;
+    }
+
+    return -1;
 }
 
 // Получить перечень идентификаторов задач для одного user_unique_id. Список задач одного пользователя.

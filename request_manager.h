@@ -82,6 +82,9 @@ public:
 	// Текстовое название состояния/статуса задачи.
 	bool get_status_name_by_task_id(const int task_id, std::string& status_name);
 
+	// Получить id текущего пользователя задачи.
+	int get_task_user_id_by_task_id(const int task_id);
+
 	// Получить перечень идентификаторов задач для одного user_unique_id. Список задач одного пользователя. 
 	int get_task_ids_by_user_id(const int user_id, vector_int& task_ids);
 
@@ -96,11 +99,11 @@ public:
 
 // ***** Добавляем в базу данных *****
 	// Добавить нового пользователя.
-	bool add_user(UserType user_type, const std::string& login, const std::string& password,
+	int add_user(UserType user_type, const std::string& login, const std::string& password,
 		const std::string& sname, const std::string& fname, const std::string& patr);
 
 	// Добавить новую задачу.
-	bool add_task(const int user_id, const std::string& deadline,
+	int add_task(const int user_id, const std::string& deadline,
 		const std::string& name, const std::string& description);
 
 // ***** Удаляем из базы данных *****
@@ -119,6 +122,9 @@ public:
 
 	// Изменить статус задачи.
 	bool set_task_status(const int task_id, TaskStatus task_status);
+
+	// Изменить исполнителя задачи.
+	bool set_task_user(const int task_id, const int user_id);
 
 private: // methods
 	// Узнать пароль пользователя по user_unique_id.
