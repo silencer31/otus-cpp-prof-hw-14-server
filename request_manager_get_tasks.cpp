@@ -97,7 +97,7 @@ bool RequestManager::get_task_data_by_task_id(const int task_id, vector_int& use
 {
     const vector_str int_columns{ "user_unique_id", "status_type_number" };
 
-    if (!data_storage_ptr->get_corresp_columns_txt_values("Tasks", "task_unique_id", int_columns,
+    if (!data_storage_ptr->get_corresp_columns_int_values("Tasks", "task_unique_id", int_columns,
         std::to_string(task_id), user_and_status)) {
         return false;
     }

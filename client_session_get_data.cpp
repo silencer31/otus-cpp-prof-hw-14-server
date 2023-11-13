@@ -65,10 +65,14 @@ void ClientSession::get_userlist()
 
 	server_reply["result"] = (size > 0);
 
-	if (size > 0) {
-		id_list.shrink_to_fit();
-		reply_request["id_list"] = json::array(id_list);
+	if (size == 0) {
+		reply_request(CommandType::Get);
+		return;
 	}
+	
+	id_list.shrink_to_fit();
+	
+	server_reply["id_list"] = id_list;
 
 	reply_request(CommandType::Get);
 }
@@ -112,10 +116,14 @@ void ClientSession::get_tasklist()
 
 	server_reply["result"] = (size > 0);
 
-	if (size > 0) {
-		id_list.shrink_to_fit();
-		reply_request["id_list"] = json::array(id_list);
+	if (size == 0) {
+		reply_request(CommandType::Get);
+		return;
 	}
+	
+	id_list.shrink_to_fit();
+	
+	server_reply["id_list"] = id_list;
 
 	reply_request(CommandType::Get);
 }
@@ -143,8 +151,8 @@ void ClientSession::get_typelist()
 	type_list.shrink_to_fit();
 	description_list.shrink_to_fit();
 
-	reply_request["numbers"] = json::array(type_list);
-	reply_request["description"] = json::array(description_list);
+	server_reply["numbers"] = type_list;
+	server_reply["description"] = description_list;
 
 	reply_request(CommandType::Get);
 }
@@ -172,8 +180,8 @@ void ClientSession::get_statuslist()
 	status_list.shrink_to_fit();
 	description_list.shrink_to_fit();
 
-	reply_request["numbers"] = json::array(status_list);
-	reply_request["description"] = json::array(description_list);
+	server_reply["numbers"] = status_list;
+	server_reply["description"] = description_list;
 
 	reply_request(CommandType::Get);
 }

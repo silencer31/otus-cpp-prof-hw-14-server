@@ -207,7 +207,7 @@ void ClientSession::handle_add()
 void ClientSession::handle_set()
 {
 	// Определяем какие данные нужно изменить в базе
-	SetRequest request_type = task_server_ptr->edit_request_type(client_request["type"]);
+	SetRequest request_type = task_server_ptr->set_request_type(client_request["type"]);
 
 	switch (request_type) {
 	case SetRequest::Unknown:

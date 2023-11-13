@@ -248,7 +248,7 @@ int DataStorage::get_corresp_col_int_vector(const std::string& table,
 
     if (SQLITE_OK != sqlite3_prepare_v2(handle, request.c_str(), -1, &stmt, nullptr)) {
         std::cout << "sqlite prepare error " << sqlite3_errmsg(handle) << std::endl;
-        return;
+        return 0;
     }
 
     int number = 0;
