@@ -12,37 +12,37 @@ void ClientSession::reply_error(RequestError request_error)
 
 	switch (request_error) {
 	case RequestError::ParseError:
-		server_reply["type"] = "parse_error";
+		server_reply["errtext"] = "parse_error";
 		break;
 	case RequestError::IsNull:
-		server_reply["type"] = "is_null";
+		server_reply["errtext"] = "is_null";
 		break;
 	case RequestError::NotObject:
-		server_reply["type"] = "not_object";
+		server_reply["errtext"] = "not_object";
 		break;
 	case RequestError::NoCommand:
-		server_reply["type"] = "command_not_found";
+		server_reply["errtext"] = "command_not_found";
 		break;
 	case RequestError::UnknownCommand:
-		server_reply["type"] = "unknown_command";
+		server_reply["errtext"] = "unknown_command";
 		break;
 	case RequestError::NoParameter:
-		server_reply["type"] = "not_found";
+		server_reply["errtext"] = "not_found";
 		break;
 	case RequestError::BadValue:
-		server_reply["type"] = "bad_value";
+		server_reply["errtext"] = "bad_value";
 		break;
 	case RequestError::NotLogged:
-		server_reply["type"] = "not_logged";
+		server_reply["errtext"] = "not_logged";
 		break;
 	case RequestError::AlreadyLogged:
-		server_reply["type"] = "already_logged";
+		server_reply["errtext"] = "already_logged";
 		break;
 	case RequestError::NoPermission:
-		server_reply["type"] = "no_permission";
+		server_reply["errtext"] = "no_permission";
 		break;
 	default:
-		server_reply["type"] = "unknown";
+		server_reply["errtext"] = "unknown";
 		break;
 	}
 

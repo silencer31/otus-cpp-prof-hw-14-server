@@ -3,6 +3,8 @@
 // Получить ФИО пользователя по user id.
 void ClientSession::get_fullname()
 {
+	server_reply["type"] = "fullname";
+
 	if (!client_request.contains("user_id")) {
 		server_reply["parameter"] = "user_id";
 		reply_error(RequestError::NoParameter);
@@ -42,6 +44,9 @@ void ClientSession::get_fullname()
 		server_reply["first"] = fio.at(1);
 		server_reply["patronymic"] = fio.at(2);
 	}
+	else {
+		server_reply["details"] = "Unable to get FIO for provided user_ud";
+	}
 
 	reply_request(CommandType::Get);
 }
@@ -49,6 +54,8 @@ void ClientSession::get_fullname()
 // Получить список всех id пользователей.
 void ClientSession::get_userlist()
 {
+	server_reply["type"] = "userlist";
+
 	// Только администратор может запросить список id всех пользователей.
 	if (logged_user_type != UserType::Administrator) {
 		server_reply["details"] = "Insufficient access level";
@@ -64,8 +71,10 @@ void ClientSession::get_userlist()
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
 
 	if (size == 0) {
+		server_reply["details"] = "No user ids available";
 		reply_request(CommandType::Get);
 		return;
 	}
@@ -80,6 +89,8 @@ void ClientSession::get_userlist()
 // Если указан user_id, получить список его задач, а если не указан, то список всех задач. 
 void ClientSession::get_tasklist()
 {
+	server_reply["type"] = "tasklist";
+
 	int user_id = -1;
 
 	// Если передан id пользователя, возвращаем список задач только для него.
@@ -115,8 +126,10 @@ void ClientSession::get_tasklist()
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
 
 	if (size == 0) {
+		server_reply["details"] = "No task ids available";
 		reply_request(CommandType::Get);
 		return;
 	}
@@ -131,6 +144,8 @@ void ClientSession::get_tasklist()
 // Получить список возможных типов пользователя и список с их описанием. 
 void ClientSession::get_typelist()
 {
+	server_reply["type"] = "typelist";
+
 	vector_int type_list;
 	vector_str description_list;
 
@@ -142,8 +157,10 @@ void ClientSession::get_typelist()
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
 
 	if (size == 0) {
+		server_reply["details"] = "No user types available";
 		reply_request(CommandType::Get);
 		return;
 	}
@@ -152,7 +169,7 @@ void ClientSession::get_typelist()
 	description_list.shrink_to_fit();
 
 	server_reply["numbers"] = type_list;
-	server_reply["description"] = description_list;
+	server_reply["descriptions"] = description_list;
 
 	reply_request(CommandType::Get);
 }
@@ -160,6 +177,8 @@ void ClientSession::get_typelist()
 // Получить список возможных статусов задачи и список с их описанием.
 void ClientSession::get_statuslist()
 {
+	server_reply["type"] = "statuslist";
+
 	vector_int status_list;
 	vector_str description_list;
 
@@ -171,8 +190,10 @@ void ClientSession::get_statuslist()
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
 
 	if (size == 0) {
+		server_reply["details"] = "No status types available";
 		reply_request(CommandType::Get);
 		return;
 	}
@@ -181,7 +202,7 @@ void ClientSession::get_statuslist()
 	description_list.shrink_to_fit();
 
 	server_reply["numbers"] = status_list;
-	server_reply["description"] = description_list;
+	server_reply["descriptions"] = description_list;
 
 	reply_request(CommandType::Get);
 }
@@ -189,6 +210,8 @@ void ClientSession::get_statuslist()
 // Получить данные задачи по task id.
 void ClientSession::get_taskdata()
 {
+	server_reply["type"] = "taskdata";
+
 	if (!client_request.contains("task_id")) {
 		server_reply["parameter"] = "task_id";
 		reply_error(RequestError::NoParameter);
