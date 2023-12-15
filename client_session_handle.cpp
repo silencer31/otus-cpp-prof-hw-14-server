@@ -143,7 +143,9 @@ void ClientSession::handle_login()
 	// Если всё прошло успешно, запоминаем залогиненного пользователя сессии.
 	logged_user_id = user_id;
 	logged_user_type = request_manager_ptr->get_user_type_from_int(user_type_number);
-		
+	
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
 	server_reply["user_id"] = logged_user_id;
 	server_reply["user_type"] = user_type_number;
 

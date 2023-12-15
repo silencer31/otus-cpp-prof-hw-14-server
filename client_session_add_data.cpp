@@ -22,6 +22,12 @@ void ClientSession::add_user()
 		return;
 	}
 
+	if (!client_request.contains("password")) {
+		server_reply["parameter"] = "password";
+		reply_error(RequestError::NoParameter);
+		return;
+	}
+
 	if (!client_request.contains("second")) {
 		server_reply["parameter"] = "second";
 		reply_error(RequestError::NoParameter);
@@ -36,12 +42,6 @@ void ClientSession::add_user()
 
 	if (!client_request.contains("patronymic")) {
 		server_reply["parameter"] = "patronymic";
-		reply_error(RequestError::NoParameter);
-		return;
-	}
-
-	if (!client_request.contains("password")) {
-		server_reply["parameter"] = "password";
 		reply_error(RequestError::NoParameter);
 		return;
 	}

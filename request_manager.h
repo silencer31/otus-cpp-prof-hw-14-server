@@ -33,7 +33,7 @@ public:
 	}
 
 	void free_access() {
-		data_storage_ptr->lock_db();
+		data_storage_ptr->unlock_db();
 	}
 
 // ***** ѕолучаем разные данные, св€занные с пользовател€ми *****

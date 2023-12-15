@@ -32,7 +32,6 @@ void ClientSession::get_fullname()
 
 	vector_str fio;
 	fio.reserve(3);
-
 	
 	bool result = request_manager_ptr->get_fio_by_user_id(user_id, fio);
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
