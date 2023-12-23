@@ -10,7 +10,7 @@ void ClientSession::handle_request()
 	CommandType comm_type = task_server_ptr->command_type(client_request["command"]);
 
 	// Для запросов работы с данными пользователь должен быть залогинен .
-	if ( (comm_type > CommandType::Login) && (logged_user_type != UserType::Unknown)) {
+	if ( (comm_type > CommandType::Login) && (logged_user_type == UserType::Unknown)) {
 		reply_error(RequestError::NotLogged);
 		return;
 	}
