@@ -53,6 +53,9 @@ public:
 	// Получить user_type_number по user_unique_id. Число, соответствующее типу пользователя.
 	int get_user_type_by_user_id(const int user_id);
 
+	// Узнать логин по id пользователя.
+	bool get_login_by_user_id(const int user_id, std::string& username);
+
 	// Текстовое название типа пользователя. 
 	bool get_user_type_name_by_user_id(const int user_id, std::string& type_name);
 

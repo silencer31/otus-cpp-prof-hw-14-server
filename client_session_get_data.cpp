@@ -44,7 +44,59 @@ void ClientSession::get_fullname()
 		server_reply["patronymic"] = fio.at(2);
 	}
 	else {
-		server_reply["details"] = "Unable to get FIO for provided user_ud";
+		server_reply["details"] = "Unable to get FIO for provided user_id";
+	}
+
+	reply_request(CommandType::Get);
+}
+
+// Получить логин и тип пользователя по user id.
+void ClientSession::get_username()
+{
+	server_reply["type"] = "username";
+
+	if (!client_request.contains("user_id")) {
+		server_reply["parameter"] = "user_id";
+		reply_error(RequestError::NoParameter);
+		return;
+	}
+
+	if (!client_request["user_id"].is_number_integer()) {
+		server_reply["parameter"] = "user_id";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	int user_id = static_cast<int>(client_request["user_id"]);
+
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
+
+	// Узнаем число, соответствующее типу пользователя.
+	int user_type_number = request_manager_ptr->get_user_type_by_user_id(user_id);
+
+	// Проверяем, есть ли в базе пользователь с таким id.
+	if (user_type_number < 0) {
+		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+		server_reply["parameter"] = "user_id";
+		server_reply["details"] = "Provided user id is not found in data base";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	std::string user_name;
+
+	bool result = request_manager_ptr->get_login_by_user_id(user_id, user_name);
+
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
+	server_reply["result"] = result;
+
+	if (result) {
+		server_reply["user_type"] = user_type_number;
+		server_reply["user_name"] = user_name;
+	}
+	else {
+		server_reply["details"] = "Unable to get username for provided user_id";
 	}
 
 	reply_request(CommandType::Get);

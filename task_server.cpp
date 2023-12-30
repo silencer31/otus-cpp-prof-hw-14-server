@@ -15,6 +15,7 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	commands["set"]		  = CommandType::Set;
 	commands["del"]		  = CommandType::Del;
 
+	get_requests["username"]	= GetRequest::Username;
 	get_requests["fullname"]	= GetRequest::Fullname;
 	get_requests["userlist"]	= GetRequest::UserList;
 	get_requests["tasklist"]	= GetRequest::TaskList;

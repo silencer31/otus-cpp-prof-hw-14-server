@@ -164,6 +164,9 @@ void ClientSession::handle_get()
 		server_reply["details"] = "Unknown get request";
 		reply_error(RequestError::BadValue);
 		break;
+	case GetRequest::Username:
+		get_username();
+		break;
 	case GetRequest::Fullname:
 		get_fullname();
 		break;

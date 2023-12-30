@@ -42,6 +42,14 @@ int RequestManager::get_user_type_by_user_id(const int user_id)
     return -1;
 }
 
+// Узнать логин по id пользователя.
+bool RequestManager::get_login_by_user_id(const int user_id, std::string& username)
+{
+    // Узнаем user_unique_login в таблице Users по user_unique_id. 
+    return data_storage_ptr->get_corresp_col_value_txt("Users", "user_unique_id", "user_unique_login",
+        std::to_string(user_id), username);
+}
+
 // Текстовое название типа пользователя
 bool RequestManager::get_user_type_name_by_user_id(const int user_id, std::string& type_name)
 {
