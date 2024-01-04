@@ -170,7 +170,7 @@ void ClientSession::get_tasklist()
 	vector_int id_list;
 	id_list.reserve(30);
 
-	int size = ((user_id >= 0)
+	int size = ((user_id < 0)
 		? request_manager_ptr->get_task_id_list(id_list)
 		: request_manager_ptr->get_task_ids_by_user_id(user_id, id_list));
 
