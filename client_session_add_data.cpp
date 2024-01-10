@@ -51,9 +51,9 @@ void ClientSession::add_user()
 		reply_error(RequestError::NoPermission);
 		return;
 	}
-
+	
 	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
-
+	
 	// Проверяем, есть ли уже такой логин в базе.
 	if (request_manager_ptr->login_present(client_request["username"])) {
 		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
@@ -62,9 +62,9 @@ void ClientSession::add_user()
 		reply_error(RequestError::BadValue);
 		return;
 	}
-
+	
 	UserType user_type = request_manager_ptr->get_user_type_from_int(static_cast<int>(client_request["user_type"]));
-
+	
 	// Проверяем корректность переданного типа пользователя.
 	if (user_type == UserType::Unknown) {
 		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
@@ -73,7 +73,7 @@ void ClientSession::add_user()
 		reply_error(RequestError::BadValue);
 		return;
 	}
-		
+	
 	int user_id = request_manager_ptr->add_user(user_type, client_request["username"], client_request["password"],
 		client_request["second"], client_request["first"], client_request["patronymic"]);
 	

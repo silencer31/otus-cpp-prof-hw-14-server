@@ -32,11 +32,9 @@ bool DataStorage::handle_request(const std::string& request)
     };
 
     char* errmsg;
-    
-    data_mutex.lock();
-    int rc = sqlite3_exec(handle, request.c_str(), exec_callback, 0, &errmsg);
-    data_mutex.unlock();
         
+    int rc = sqlite3_exec(handle, request.c_str(), exec_callback, 0, &errmsg);
+            
     if (rc != SQLITE_OK)
     {
         std::cerr << "Can't execute query: " << errmsg << std::endl;
@@ -53,12 +51,8 @@ bool DataStorage::execute_db_request(const std::string& request, char** err_ptr)
     auto exec_callback = [](void*, int, char**, char**) -> int {
         return 0;
     };    
-
-    data_mutex.lock();
-
+ 
     int result = sqlite3_exec(handle, request.c_str(), exec_callback, 0, &(*err_ptr));
-    
-    data_mutex.unlock();
-
+ 
     return (result == SQLITE_OK);
 }
