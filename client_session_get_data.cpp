@@ -108,7 +108,7 @@ void ClientSession::get_userlist()
 	server_reply["type"] = "userlist";
 
 	// Только администратор может запросить список id всех пользователей.
-	if (logged_user_type != UserType::Administrator) {
+	if (logged_user_type < UserType::Administrator || logged_user_type > UserType::Operator) {
 		server_reply["details"] = "Insufficient access level";
 		reply_error(RequestError::NoPermission);
 		return;
