@@ -129,6 +129,9 @@ public:
 	// Изменить исполнителя задачи.
 	bool set_task_user(const int task_id, const int user_id);
 
+	// Изменить deadline задачи.
+	bool set_task_deadline(const int task_id, const std::string& deadline);
+
 private: // methods
 	// Узнать пароль пользователя по user_unique_id.
 	bool get_password_by_user_id(const int user_id, std::string& password);

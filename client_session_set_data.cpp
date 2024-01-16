@@ -293,3 +293,45 @@ void ClientSession::set_taskuser()
 
 	reply_request(CommandType::Set);
 }
+
+// Установить новое значение deadline у задачи
+void ClientSession::set_taskdeadline()
+{
+	if (!client_request.contains("task_id")) {
+		server_reply["parameter"] = "task_id";
+		reply_error(RequestError::NoParameter);
+		return;
+	}
+
+	if (!client_request["task_id"].is_number_integer()) {
+		server_reply["parameter"] = "task_id";
+		server_reply["details"] = "task id value is not integer";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	const int task_id = static_cast<int>(client_request["task_id"]);
+
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
+
+	// Проверяем, был ли сообщен корректно id задачи.
+	if (request_manager_ptr->get_status_type_by_task_id(task_id) < 0) {
+		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+		server_reply["parameter"] = "task_id";
+		server_reply["details"] = "Provided task id is not found in data base";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	bool result = request_manager_ptr->set_task_deadline(task_id, client_request["deadline"]);
+
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
+	server_reply["result"] = result;
+
+	if (!result) {
+		server_reply["details"] = "An error occurred while setting new deadline";
+	}
+
+	reply_request(CommandType::Set);
+}

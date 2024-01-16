@@ -237,6 +237,9 @@ void ClientSession::handle_set()
 	case SetRequest::TaskUser:
 		set_taskuser();
 		break;
+	case SetRequest::TaskDeadline:
+		set_taskdeadline();
+		break;
 	default:
 		break;
 	}

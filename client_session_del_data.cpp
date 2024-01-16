@@ -45,15 +45,46 @@ void ClientSession::del_user()
 		return;
 	}
 	
-	bool result = request_manager_ptr->del_user(user_id);
+	// —мотрим список задач, которые выполн€л данный пользователь.
+	vector_int ids;
+	[[maybe_unused]] const int number = request_manager_ptr->get_task_ids_by_user_id(user_id, ids);
 	
+	bool result = false;
+
+	//  аждой задаче ставим статус "Not appointed" и назначаем user_id = 0.
+	for (auto iter = ids.cbegin(); iter != ids.cend(); ++iter) {
+		result = request_manager_ptr->set_task_status(*iter, TaskStatus::NotAppointed);
+
+		if (!result) {
+			server_reply["details"] = "Error while changing task status to not appointed";
+			break;
+		}
+
+		result = request_manager_ptr->set_task_user(*iter, 0);
+
+		if (!result) {
+			server_reply["details"] = "Error while changing changing user id for task";
+			break;
+		}
+	}
+
+	if (!result) {
+		request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
+		server_reply["result"] = result;
+		reply_request(CommandType::Del);
+		return;
+	}
+
+	// ”дал€ем пользовател€ из базы.
+	result = request_manager_ptr->del_user(user_id);
+
 	request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
-
-	server_reply["result"] = result;
-
+	
 	if (!result) {
 		server_reply["details"] = "An error occurred while deletion of the user";
 	}
+
+	server_reply["result"] = result;
 
 	reply_request(CommandType::Del);
 }

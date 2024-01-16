@@ -30,6 +30,7 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	set_requests["usertype"] = SetRequest::UserType;
 	set_requests["taskstatus"] = SetRequest::TaskStatus;
 	set_requests["taskuser"] = SetRequest::TaskUser;
+	set_requests["deadline"] = SetRequest::TaskDeadline;
 		
 	del_requests["user"] = DelRequest::User;
 	del_requests["task"] = DelRequest::Task;

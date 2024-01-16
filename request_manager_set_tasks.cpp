@@ -16,3 +16,10 @@ bool RequestManager::set_task_user(const int task_id, const int user_id)
 		"task_unique_id", std::to_string(task_id));
 }
 
+// Изменить deadline задачи.
+bool RequestManager::set_task_deadline(const int task_id, const std::string& deadline)
+{
+	return data_storage_ptr->set_value_with_clause("Tasks", "deadline", deadline,
+		"task_unique_id", std::to_string(task_id));
+}
+
