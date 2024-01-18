@@ -206,7 +206,10 @@ void ClientSession::set_taskstatus()
 		return;
 	}
 	
-	bool result = request_manager_ptr->set_task_status(task_id, new_task_status);
+	bool result = (new_task_status == TaskStatus::NotAppointed
+		? request_manager_ptr->set_task_not_appointed(task_id)
+		: request_manager_ptr->set_task_status(task_id, new_task_status));
+
 	request_manager_ptr->free_access();
 
 	server_reply["result"] = result;

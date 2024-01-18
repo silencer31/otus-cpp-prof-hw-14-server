@@ -126,6 +126,9 @@ public:
 	// Изменить статус задачи.
 	bool set_task_status(const int task_id, TaskStatus task_status);
 
+	// Сбросить исполнителя задачи.
+	bool set_task_not_appointed(const int task_id);
+
 	// Изменить исполнителя задачи.
 	bool set_task_user(const int task_id, const int user_id);
 

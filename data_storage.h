@@ -114,6 +114,11 @@ public:
 		const std::string& target_col, const std::string& new_value,
 		const std::string& clause_col, const std::string& clause_val);
 
+	// Обновить значения в столбцах таблицы с соблюдением условия.
+	bool set_several_values_with_clause(const std::string& table,
+		const vector_str& target_columns, const vector_str& values,
+		const std::string& clause_col, const std::string& clause_val);
+
 	// Добавить в таблицу новую строку со значениями для всех столбцов.
 	bool insert_row(const std::string& table, const std::string& values);
 
