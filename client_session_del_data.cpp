@@ -5,6 +5,7 @@ void ClientSession::del_user()
 {
 	if (!client_request.contains("user_id")) {
 		server_reply["parameter"] = "user_id";
+		server_reply["details"] = "request doesn't contain user_id field";
 		reply_error(RequestError::NoParameter);
 		return;
 	}
@@ -49,7 +50,7 @@ void ClientSession::del_user()
 	vector_int ids;
 	[[maybe_unused]] const int number = request_manager_ptr->get_task_ids_by_user_id(user_id, ids);
 	
-	bool result = false;
+	bool result = true;
 
 	//  аждой задаче ставим статус "Not appointed" и назначаем user_id = 0.
 	for (auto iter = ids.cbegin(); iter != ids.cend(); ++iter) {
@@ -63,7 +64,7 @@ void ClientSession::del_user()
 		result = request_manager_ptr->set_task_user(*iter, 0);
 
 		if (!result) {
-			server_reply["details"] = "Error while changing changing user id for task";
+			server_reply["details"] = "Error while changing user id for task";
 			break;
 		}
 	}
@@ -101,6 +102,7 @@ void ClientSession::del_task()
 
 	if (!client_request.contains("task_id")) {
 		server_reply["parameter"] = "task_id";
+		server_reply["details"] = "request doesn't contain task_id field";
 		reply_error(RequestError::NoParameter);
 		return;
 	}

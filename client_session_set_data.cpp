@@ -302,6 +302,7 @@ void ClientSession::set_taskdeadline()
 {
 	if (!client_request.contains("task_id")) {
 		server_reply["parameter"] = "task_id";
+		server_reply["details"] = "request doesn't contain task_id field";
 		reply_error(RequestError::NoParameter);
 		return;
 	}
@@ -310,6 +311,13 @@ void ClientSession::set_taskdeadline()
 		server_reply["parameter"] = "task_id";
 		server_reply["details"] = "task id value is not integer";
 		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	if (!client_request.contains("deadline")) {
+		server_reply["parameter"] = "deadline";
+		server_reply["details"] = "request doesn't contain deadline field";
+		reply_error(RequestError::NoParameter);
 		return;
 	}
 
