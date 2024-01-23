@@ -126,6 +126,9 @@ public:
 	// Изменить статус задачи.
 	bool set_task_status(const int task_id, TaskStatus task_status);
 
+	// Установить исполнителя и назначить статус "appointed".
+	bool set_task_appointed(const int task_id, const int user_id);
+
 	// Сбросить исполнителя задачи.
 	bool set_task_not_appointed(const int task_id);
 
@@ -133,7 +136,7 @@ public:
 	bool set_task_user(const int task_id, const int user_id);
 
 	// Изменить deadline задачи.
-	bool set_task_deadline(const int task_id, const std::string& deadline);
+	bool set_task_deadline(const int task_id, const std::string& dl_value);
 
 private: // methods
 	// Узнать пароль пользователя по user_unique_id.

@@ -11,6 +11,8 @@ bool DataStorage::set_value_with_clause(const std::string& table,
         + " SET " + target_col + " = " + new_value
         + " WHERE " + clause_col + " = " + clause_val;  
 
+    //std::cout << "req: " << request << std::endl;
+    
     char* errmsg = nullptr;
 
     if (execute_db_request(request, &errmsg)) {

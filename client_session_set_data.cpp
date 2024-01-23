@@ -25,7 +25,7 @@ void ClientSession::set_password()
 		return;
 	}
 
-	int user_id = static_cast<int>(client_request["user_id"]);
+	const int user_id = static_cast<int>(client_request["user_id"]);
 
 	// Администратор может менять пароль любого пользователя, а остальные только свой пароль.
 	if ((user_id != logged_user_id) && (logged_user_type != UserType::Administrator)) {
@@ -93,8 +93,8 @@ void ClientSession::set_usertype()
 		return;
 	}
 
-	int user_id = static_cast<int>(client_request["user_id"]);
-	int new_user_type_val = static_cast<int>(client_request["user_type"]);
+	const int user_id = static_cast<int>(client_request["user_id"]);
+	const int new_user_type_val = static_cast<int>(client_request["user_type"]);
 
 	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 
@@ -170,13 +170,13 @@ void ClientSession::set_taskstatus()
 		return;
 	}
 	
-	int task_id = static_cast<int>(client_request["task_id"]);
-	int new_task_status_val = static_cast<int>(client_request["status"]);
+	const int task_id = static_cast<int>(client_request["task_id"]);
+	const int new_task_status_val = static_cast<int>(client_request["status"]);
 
 	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 
 	// Текущий статус указанной задачи.
-	int cur_task_status_val = request_manager_ptr->get_status_type_by_task_id(task_id);
+	const int cur_task_status_val = request_manager_ptr->get_status_type_by_task_id(task_id);
 
 	// Проверяем, был ли сообщен корректно id задачи.
 	if (cur_task_status_val < 0) {
@@ -250,13 +250,15 @@ void ClientSession::set_taskuser()
 		return;
 	}
 
-	int task_id = static_cast<int>(client_request["task_id"]);
-	int new_task_user_id = static_cast<int>(client_request["user_id"]);
+	const int task_id = static_cast<int>(client_request["task_id"]);
+	const int new_task_user_id = static_cast<int>(client_request["user_id"]);
 
 	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
 
+	const int task_status = request_manager_ptr->get_status_type_by_task_id(task_id);
+
 	// Проверяем, был ли сообщен корректно id задачи.
-	if (request_manager_ptr->get_status_type_by_task_id(task_id) < 0) {
+	if (task_status < 0) {
 		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 		server_reply["parameter"] = "task_id";
 		server_reply["details"] = "Provided task id is not found in data base";
@@ -264,17 +266,6 @@ void ClientSession::set_taskuser()
 		return;
 	}
 
-	// Смотрим, был ли уже назначен пользователь на данную задачу.
-	int cur_task_user_id = request_manager_ptr->get_task_user_id_by_task_id(task_id);
-
-	// Если был назначен, проверяем совпадение с новым пользователем.
-	if ((cur_task_user_id > 0) && (new_task_user_id)) {
-		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
-		server_reply["details"] = "The same user has alredy been appointed";
-		reply_error(RequestError::NoPermission);
-		return;
-	}
-	
 	// Проверяем, был ли сообщен корректно новый id пользователя.
 	if (request_manager_ptr->get_user_type_by_user_id(new_task_user_id) < 0) {
 		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
@@ -284,7 +275,21 @@ void ClientSession::set_taskuser()
 		return;
 	}
 
-	bool result = request_manager_ptr->set_task_user(task_id, new_task_user_id);
+	// Смотрим, был ли уже назначен пользователь на данную задачу.
+	const int cur_task_user_id = request_manager_ptr->get_task_user_id_by_task_id(task_id);
+
+	// Если был назначен, проверяем совпадение с новым пользователем.
+	if ((cur_task_user_id > 0) && (cur_task_user_id == new_task_user_id)) {
+		request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+		server_reply["details"] = "The same user has alredy been appointed";
+		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	bool result = (task_status < 2
+		? request_manager_ptr->set_task_appointed(task_id, new_task_user_id)
+		: request_manager_ptr->set_task_user(task_id, new_task_user_id)
+		);
 	
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
