@@ -187,6 +187,17 @@ void ClientSession::set_taskstatus()
 		return;
 	}
 
+	// ѕровер€ем на кого назначена задача.
+	const int user_id = request_manager_ptr->get_task_user_id_by_task_id(task_id);
+
+	// ѕользователь может измен€ть статус только своей задачи.
+	if (logged_user_type == UserType::User && logged_user_id != user_id) {
+		request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
+		server_reply["details"] = "Logged user is not allowed to change task status";
+		reply_error(RequestError::NoPermission);
+		return;
+	}
+
 	// ѕровер€ем совпадение нового статуса задачи и текущего.
 	if (new_task_status_val == cur_task_status_val) {
 		request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
@@ -206,6 +217,14 @@ void ClientSession::set_taskstatus()
 		return;
 	}
 	
+	// ѕользователь не может отказатьс€ от своей задачи.
+	if (logged_user_type == UserType::User && new_task_status == TaskStatus::NotAppointed) {
+		request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
+		server_reply["details"] = "Logged user is not allowed to abandon task";
+		reply_error(RequestError::NoPermission);
+		return;
+	}
+
 	bool result = (new_task_status == TaskStatus::NotAppointed
 		? request_manager_ptr->set_task_not_appointed(task_id)
 		: request_manager_ptr->set_task_status(task_id, new_task_status));
@@ -252,6 +271,13 @@ void ClientSession::set_taskuser()
 
 	const int task_id = static_cast<int>(client_request["task_id"]);
 	const int new_task_user_id = static_cast<int>(client_request["user_id"]);
+
+	// ѕользователь может назначать задачу только на себ€.
+	if (logged_user_type == UserType::User && logged_user_id != new_task_user_id) {
+		server_reply["details"] = "Logged user is not allowed to appoint task to another user";
+		reply_error(RequestError::NoPermission);
+		return;
+	}
 
 	request_manager_ptr->lock_access(); // ѕытаемс€ получить доступ к базе.
 
@@ -336,6 +362,17 @@ void ClientSession::set_taskdeadline()
 		server_reply["parameter"] = "task_id";
 		server_reply["details"] = "Provided task id is not found in data base";
 		reply_error(RequestError::BadValue);
+		return;
+	}
+
+	// ѕровер€ем на кого назначена задача.
+	const int user_id = request_manager_ptr->get_task_user_id_by_task_id(task_id);
+
+	// ѕользователь может измен€ть deadline только своей задачи.
+	if (logged_user_type == UserType::User && logged_user_id != user_id) {
+		request_manager_ptr->free_access(); // ќсвобождаем доступ к базе.
+		server_reply["details"] = "Logged user is not allowed to change task deadline";
+		reply_error(RequestError::NoPermission);
 		return;
 	}
 
