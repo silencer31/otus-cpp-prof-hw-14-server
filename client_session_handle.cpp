@@ -202,12 +202,6 @@ void ClientSession::handle_get()
 	case GetRequest::TaskList:
 		get_tasklist();
 		break;
-	case GetRequest::StatusList:
-		get_statuslist();
-		break;
-	case GetRequest::TypeList:
-		get_typelist();
-		break;
 	case GetRequest::TaskData:
 		get_taskdata();
 		break;

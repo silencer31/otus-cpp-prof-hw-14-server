@@ -10,7 +10,7 @@ find_package(Threads)
 
 # see https://www.sqlite.org/howtocompile.html
 include(FetchContent)
-FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202205041843.tar.gz")
+FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202401231504.tar.gz")
 FetchContent_MakeAvailable(sqlite3)
 
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)

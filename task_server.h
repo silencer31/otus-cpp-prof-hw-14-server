@@ -35,7 +35,7 @@ public:
 
 	// Получаем тип common запроса.
 	CommonRequest common_request_type(const std::string& comm) {
-		return ((common_requests.find(comm) == common_requests.end()) ? GetRequest::Unknown : common_requests[comm]);
+		return ((common_requests.find(comm) == common_requests.end()) ? CommonRequest::Unknown : common_requests[comm]);
 	}
 
 	// Получаем тип get запроса.
