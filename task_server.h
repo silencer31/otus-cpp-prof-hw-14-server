@@ -6,13 +6,16 @@
 
 using boost::asio::ip::tcp;
 
-using session_map = std::map<int, session_shared>;
+using session_map = std::map<int, session_shared>; // Для коллекции сессий пользователей.
 
-using command_map = std::map<std::string, CommandType>;
-using get_req_map = std::map<std::string, GetRequest>;
-using add_req_map = std::map<std::string, AddRequest>;
-using set_req_map = std::map<std::string, SetRequest>;
-using del_req_map = std::map<std::string, DelRequest>;
+using command_map = std::map<std::string, CommandType>; // Для коллекции основных видов запросов серверу.
+
+using common_map = std::map<std::string, CommonRequest>; // Для коллекции подвидов запросов получения общих данных.
+
+using get_req_map = std::map<std::string, GetRequest>; // Для коллекции подвидов запросов получения защищенных данных.
+using add_req_map = std::map<std::string, AddRequest>; // Для коллекции подвидов запросов добавления данных в базу.
+using set_req_map = std::map<std::string, SetRequest>; // Для коллекции подвидов запросов изменения данных в базе.
+using del_req_map = std::map<std::string, DelRequest>; // Для коллекции подвидов запросов удаления данных из базы
 
 class TaskServer : public std::enable_shared_from_this<TaskServer>
 {
@@ -28,6 +31,11 @@ public:
 	// Получаем тип команды в запросе от клиента или Unknown, если такой команды нет.
 	CommandType command_type(const std::string& comm) {
 		return ((commands.find(comm) == commands.end()) ? CommandType::Unknown : commands[comm]);
+	}
+
+	// Получаем тип common запроса.
+	CommonRequest common_request_type(const std::string& comm) {
+		return ((common_requests.find(comm) == common_requests.end()) ? GetRequest::Unknown : common_requests[comm]);
 	}
 
 	// Получаем тип get запроса.
@@ -60,6 +68,9 @@ private: // data
 
 	// Команды от клиента, которые готов обрабатывать сервер.
 	command_map commands;
+	
+	common_map common_requests;
+	
 	get_req_map get_requests;
 	add_req_map add_requests;
 	set_req_map set_requests;

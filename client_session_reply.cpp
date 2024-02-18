@@ -13,6 +13,13 @@ void ClientSession::reply_request(CommandType command_type)
 		server_reply["command"] = "test";
 		server_reply["result"] = !shutdown_session_flag; // Сессия не находится на завершении.
 		break;
+	case CommandType::Common:
+		server_reply["command"] = "common";
+		break;
+	case CommandType::Login:
+		server_reply["command"] = "login";
+		server_reply["result"] = (logged_user_type != UserType::Unknown);
+		break;
 	case CommandType::Closedown:
 		server_reply["command"] = "closedown";
 		server_reply["result"] = shutdown_session_flag;
@@ -20,10 +27,6 @@ void ClientSession::reply_request(CommandType command_type)
 	case CommandType::Shutdown:
 		server_reply["command"] = "shutdown";
 		server_reply["result"] = shutdown_session_flag;
-		break;
-	case CommandType::Login:
-		server_reply["command"] = "login";
-		server_reply["result"] = (logged_user_type != UserType::Unknown);
 		break;
 	case CommandType::Get:
 		server_reply["command"] = "get";

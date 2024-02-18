@@ -1,5 +1,71 @@
 #include "task_server.h"
 
+// Получить список возможных типов пользователя и список с их описанием. 
+void ClientSession::get_user_types()
+{
+	server_reply["type"] = "usertypes";
+
+	vector_int type_list;
+	vector_str description_list;
+
+	type_list.reserve(3);
+	description_list.reserve(3);
+
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
+	int size = request_manager_ptr->get_type_description_lists(type_list, description_list);
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
+	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
+
+	if (size == 0) {
+		server_reply["details"] = "No user types available";
+		reply_request(CommandType::Common);
+		return;
+	}
+
+	type_list.shrink_to_fit();
+	description_list.shrink_to_fit();
+
+	server_reply["numbers"] = type_list;
+	server_reply["descriptions"] = description_list;
+
+	reply_request(CommandType::Common);
+}
+
+// Получить список возможных статусов задачи и список с их описанием.
+void ClientSession::get_task_statuses()
+{
+	server_reply["type"] = "taskstatuses";
+
+	vector_int status_list;
+	vector_str description_list;
+
+	status_list.reserve(5);
+	description_list.reserve(5);
+
+	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
+	int size = request_manager_ptr->get_status_description_lists(status_list, description_list);
+	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
+
+	server_reply["result"] = (size > 0);
+	server_reply["size"] = size;
+
+	if (size == 0) {
+		server_reply["details"] = "No status types available";
+		reply_request(CommandType::Common);
+		return;
+	}
+
+	status_list.shrink_to_fit();
+	description_list.shrink_to_fit();
+
+	server_reply["numbers"] = status_list;
+	server_reply["descriptions"] = description_list;
+
+	reply_request(CommandType::Common);
+}
+
 // Получить ФИО пользователя по user id.
 void ClientSession::get_fullname()
 {
@@ -188,72 +254,6 @@ void ClientSession::get_tasklist()
 	id_list.shrink_to_fit();
 	
 	server_reply["id_list"] = id_list;
-
-	reply_request(CommandType::Get);
-}
-
-// Получить список возможных типов пользователя и список с их описанием. 
-void ClientSession::get_typelist()
-{
-	server_reply["type"] = "typelist";
-
-	vector_int type_list;
-	vector_str description_list;
-
-	type_list.reserve(3);
-	description_list.reserve(3);
-
-	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
-	int size = request_manager_ptr->get_type_description_lists(type_list, description_list);
-	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
-
-	server_reply["result"] = (size > 0);
-	server_reply["size"] = size;
-
-	if (size == 0) {
-		server_reply["details"] = "No user types available";
-		reply_request(CommandType::Get);
-		return;
-	}
-
-	type_list.shrink_to_fit();
-	description_list.shrink_to_fit();
-
-	server_reply["numbers"] = type_list;
-	server_reply["descriptions"] = description_list;
-
-	reply_request(CommandType::Get);
-}
-
-// Получить список возможных статусов задачи и список с их описанием.
-void ClientSession::get_statuslist()
-{
-	server_reply["type"] = "statuslist";
-
-	vector_int status_list;
-	vector_str description_list;
-
-	status_list.reserve(5);
-	description_list.reserve(5);
-
-	request_manager_ptr->lock_access(); // Пытаемся получить доступ к базе.
-	int size = request_manager_ptr->get_status_description_lists(status_list, description_list);
-	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
-
-	server_reply["result"] = (size > 0);
-	server_reply["size"] = size;
-
-	if (size == 0) {
-		server_reply["details"] = "No status types available";
-		reply_request(CommandType::Get);
-		return;
-	}
-
-	status_list.shrink_to_fit();
-	description_list.shrink_to_fit();
-
-	server_reply["numbers"] = status_list;
-	server_reply["descriptions"] = description_list;
 
 	reply_request(CommandType::Get);
 }

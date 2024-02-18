@@ -7,20 +7,22 @@ TaskServer::TaskServer(boost::asio::io_context& io_context, unsigned short port,
 	, request_manager_ptr(std::make_shared<RequestManager>(file_path))
 {
 	commands["test"]	  = CommandType::Test;
+	commands["common"]	  = CommandType::Common;
+	commands["login"]	  = CommandType::Login;
 	commands["closedown"] = CommandType::Closedown;
 	commands["shutdown"]  = CommandType::Shutdown;
-	commands["login"]	  = CommandType::Login;
 	commands["get"]		  = CommandType::Get;
 	commands["add"]		  = CommandType::Add;
 	commands["set"]		  = CommandType::Set;
 	commands["del"]		  = CommandType::Del;
 
+	common_requests["usertypes"]	= CommonRequest::UserTypes;
+	common_requests["taskstatuses"] = CommonRequest::TaskStatuses;
+
 	get_requests["username"]	= GetRequest::Username;
 	get_requests["fullname"]	= GetRequest::Fullname;
 	get_requests["userlist"]	= GetRequest::UserList;
 	get_requests["tasklist"]	= GetRequest::TaskList;
-	get_requests["statuslist"]	= GetRequest::StatusList;
-	get_requests["typelist"]	= GetRequest::TypeList;
 	get_requests["taskdata"]	= GetRequest::TaskData;
 		
 	add_requests["user"] = AddRequest::User;

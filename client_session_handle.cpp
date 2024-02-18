@@ -8,15 +8,15 @@ void ClientSession::handle_request()
 {
 	// Определяем тип команды/запроса.
 	CommandType comm_type = task_server_ptr->command_type(client_request["command"]);
-
-	// Для запросов работы с данными пользователь должен быть залогинен .
+	
+	// Для запросов работы с данными пользователь должен быть залогинен.
 	if ( (comm_type > CommandType::Login) && (logged_user_type == UserType::Unknown)) {
 		reply_error(RequestError::NotLogged);
 		return;
 	}
 
-	// Все запросы get, add, edit и del должны иметь поле type.
-	if (comm_type >= CommandType::Get && !client_request.contains("type")) {
+	// Все запросы common, get, add, edit и del должны иметь поле type.
+	if (((comm_type == CommandType::Common) || (comm_type >= CommandType::Get)) && !client_request.contains("type")) {
 		server_reply["parameter"] = "type";
 		reply_error(RequestError::NoParameter);
 		return;
@@ -28,6 +28,9 @@ void ClientSession::handle_request()
 		break;
 	case CommandType::Test:
 		reply_request(CommandType::Test);
+		break;
+	case CommandType::Common:
+		handle_common();
 		break;
 	case CommandType::Login:
 		handle_login();
@@ -55,28 +58,27 @@ void ClientSession::handle_request()
 	}	
 }
 
-// Обработка запроса на завершение сессии.
-void ClientSession::handle_closedown()
+// Обаботка запроса на получение общих данных.
+void ClientSession::handle_common()
 {
-	shutdown_session_flag = true;
-	task_server_ptr->close_session(session_id); // Сообщаем серверу о завершении сессии.
+	// Определяем какие общие данные нужны из базы.
+	CommonRequest request_type = task_server_ptr->common_request_type(client_request["type"]);
 
-	reply_request(CommandType::Closedown);
-}
-
-// Обработка запроса на выключение сервера.
-void ClientSession::handle_shutdown()
-{
-	// Только администратор может выключить сервер.
-	if (logged_user_type != UserType::Administrator) {
-		reply_error(RequestError::NoPermission);
-		return;
+	switch (request_type) {
+	case CommonRequest::Unknown:
+		server_reply["parameter"] = "type";
+		server_reply["details"] = "Unknown common request";
+		reply_error(RequestError::BadValue);
+		break;
+	case CommonRequest::UserTypes:
+		get_user_types();
+		break;
+	case CommonRequest::TaskStatuses:
+		get_task_statuses();
+		break;
+	default:
+		break;
 	}
-
-	shutdown_session_flag = true;
-	task_server_ptr->shutdown_server(session_id);
-
-	reply_request(CommandType::Shutdown);
 }
 
 // Обработка запроса проверки пары логин/пароль.
@@ -139,11 +141,11 @@ void ClientSession::handle_login()
 		reply_request(CommandType::Login);
 		return;
 	}
-	
+
 	// Если всё прошло успешно, запоминаем залогиненного пользователя сессии.
 	logged_user_id = user_id;
 	logged_user_type = request_manager_ptr->get_user_type_from_int(user_type_number);
-	
+
 	request_manager_ptr->free_access(); // Освобождаем доступ к базе.
 
 	server_reply["user_id"] = logged_user_id;
@@ -152,10 +154,34 @@ void ClientSession::handle_login()
 	reply_request(CommandType::Login);
 }
 
+// Обработка запроса на завершение сессии.
+void ClientSession::handle_closedown()
+{
+	shutdown_session_flag = true;
+	task_server_ptr->close_session(session_id); // Сообщаем серверу о завершении сессии.
+
+	reply_request(CommandType::Closedown);
+}
+
+// Обработка запроса на выключение сервера.
+void ClientSession::handle_shutdown()
+{
+	// Только администратор может выключить сервер.
+	if (logged_user_type != UserType::Administrator) {
+		reply_error(RequestError::NoPermission);
+		return;
+	}
+
+	shutdown_session_flag = true;
+	task_server_ptr->shutdown_server(session_id);
+
+	reply_request(CommandType::Shutdown);
+}
+
 // Обработка запроса на получение данных.
 void ClientSession::handle_get()
 {
-	// Определяем какие данные нужны из базы.
+	// Определяем какие защищенные данные нужны из базы.
 	GetRequest request_type = task_server_ptr->get_request_type(client_request["type"]);
 
 	switch (request_type) {
