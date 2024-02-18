@@ -158,9 +158,10 @@ void ClientSession::handle_login()
 void ClientSession::handle_closedown()
 {
 	shutdown_session_flag = true;
-	task_server_ptr->close_session(session_id); // Сообщаем серверу о завершении сессии.
 
 	reply_request(CommandType::Closedown);
+
+	task_server_ptr->close_session(session_id); // Сообщаем серверу о завершении сессии.	
 }
 
 // Обработка запроса на выключение сервера.
