@@ -22,7 +22,7 @@ void ClientSession::do_read()
 
 			server_reply.clear(); // Очищаем предыдущий ответ.
 
-			std::cout << " Session: " << session_id << " Received: " << length << " " << data_read << std::endl;
+			std::cout << "Session: " << session_id << ". Received: " << length << " bytes\n" << data_read << std::endl;
 
 			// Проверка, что данные пришли в формате json.
 			if (!json::accept(data_read)) {
@@ -59,7 +59,7 @@ void ClientSession::do_read()
 			client_request.clear();
 			client_request = jdata;
 
-			std::cout << "Received request contains command: " << client_request["command"] << std::endl;
+			//std::cout << "Received request contains command: " << client_request["command"] << std::endl;
 
 			// Обработка запроса в виде json.
 			handle_request();
@@ -75,12 +75,15 @@ void ClientSession::do_write(const std::string& answer)
 
 	boost::asio::async_write( // Вызываем async_write, указывая сокет.
 		socket_, boost::asio::buffer(data_send, answer.length()),
-		[this, self](boost::system::error_code errcode, std::size_t /*length*/)
+		[this, self](boost::system::error_code errcode, std::size_t length)
 		{
 			if (errcode) {
-				std::cout << " Session: " << session_id << ". Write data boost system error: " << errcode.message() << std::endl;
+				std::cout << "Session: " << session_id << ". Write data boost system error: " << errcode.message() << std::endl;
 			}
-			
+			else {
+				std::cout << "Session: " << session_id << ". To send: " << length << " bytes\n" << data_send << "\n" << std::endl;
+			}
+
 			if (shutdown_session_flag) { // Если получена команда на выключение, больше не пытаемся читать из сети.
 				return;
 			}
