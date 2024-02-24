@@ -1,0 +1,55 @@
+Сборка консольных приложений из серверной части.
+
+Исходный код обоих консольных приложений, работающих на сервере, находится в папке “otus-cpp-prof-hw-14-server”.
+
+Далее предполагается, что библиотека boost установлена в папку D:\Boost и имеет следующие подпаки:
+1. D:\Boost\boost_1_82_0
+2. D:\Boost\Shared\include\boost-1_82
+3. D:\Boost\Shared\lib
+
+Создайте системную переменную BOOST со значением D:\Boost
+В системную переменную Path добавьте путь %BOOST%\Shared\lib
+
+Порядок сборки серверной части следующий:
+1. Создайте папку “build” внутри папки “otus-cpp-prof-hw-14-server”.
+2. Откройте консоль.
+3. Перейдите в консоли в папку "build".
+4. Выполните команду:	
+
+cmake .. -DBOOST_INCLUDEDIR=D:\Boost\Shared\include\boost-1_82 -DBOOST_LIBRARYDIR=D:\Boost\Shared\lib -DBOOST_ROOT=D:\Boost\Shared\include\boost-1_82\boost
+
+Если будет ошибка, связанная с sqlite, проверьте доступность архива по ссылке https://www.sqlite.org/snapshot/sqlite-snapshot-202401231504.tar.gz
+Если архив не доступен, замените эту ссылку в файле CMakeLists.txt на актуальную.
+
+Аналогично с nlohmann/json.
+Проверьте доступность архива по ссылке https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+Если архив не доступен, замените эту ссылку в файле CMakeLists.txt на актуальную.
+
+5. Далее выполните:
+
+cmake --build . --config Release
+
+
+После успешной компиляции в папке build появится папка release с двумя исполнимыми файлами:
+1. db_creator.exe
+2. task_server.exe
+
+
+Сборка клиентской части.
+Исходный код клиентской части проекта находится в  папке “otus-cpp-prof-hw-14-client”. 
+
+Для сборки потребуется фреймворк Qt, версии 5.15
+Далее предполагается, что фреймворк установлен в папку D:\Qt\5.15.2
+
+В системную переменную Path добавьте путь D:\Qt\5.15.2\msvc2019_64\bin
+
+Порядок сборки клиентской части следующий:
+1. Запуститете среду разработки qt-creator.
+2. Откройте файл проекта “otus-cpp-prof-hw-14-client/TaskClient/TaskClient.pro” 
+3. Слева снизу выберите тип сборки “Release”
+4. В меню Build нажмите Run qmake
+5. В меню Build нажмите Build Project "TaskClient"
+
+Рядом с папкой TaskClient появится папка “build-TaskClient-Desktop_Qt_5_15_2_MSVC2019_64bit-Release”.
+
+Внутри подпапки release появится исполнимый файл “TaskClient.exe”.
