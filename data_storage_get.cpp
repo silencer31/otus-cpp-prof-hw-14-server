@@ -1,6 +1,8 @@
 #include "data_storage.h"
 
+#include <sqlite3.h>
 #include <iostream>
+
 
 // Получить максимальное числовое значение из указанного столбца.
 bool DataStorage::get_column_max_int_value(const std::string& table, const std::string& col, int& max_value)
@@ -315,7 +317,7 @@ bool DataStorage::get_corresp_columns_int_values(const std::string& table,
 
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
-            for (int i = 0; i < target_columns.size(); ++i) {
+            for (size_t i = 0; i < target_columns.size(); ++i) {
                 values.push_back(sqlite3_column_int(stmt, i+1));
             }
             
@@ -349,7 +351,7 @@ bool DataStorage::get_corresp_columns_txt_values(const std::string& table,
 
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
-            for (int i = 0; i < target_columns.size(); ++i) {
+            for (size_t i = 0; i < target_columns.size(); ++i) {
                 values.push_back((char*)sqlite3_column_text(stmt, i+1));
             }
             

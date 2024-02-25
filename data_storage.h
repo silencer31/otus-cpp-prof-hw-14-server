@@ -2,6 +2,8 @@
 
 #include <mutex>
 #include <vector>
+#include <string>
+#include <memory>
 
 #include "sqlite3.h"
 

@@ -129,7 +129,7 @@ void ClientSession::prepare_data_send(const std::string& data)
 		data_send[i] = 0;
 	}
 
-	for (int i = 0; i < data.length(); ++i) {
+	for (size_t i = 0; i < data.length(); ++i) {
 		data_send[i] = data.c_str()[i];
 		if (i == (max_length - 1)) {
 			break;

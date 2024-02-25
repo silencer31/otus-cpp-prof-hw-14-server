@@ -36,7 +36,7 @@ bool DataStorage::set_several_values_with_clause(const std::string& table,
     // SET column_name1= value1, column_name2= value2
     std::string columns_and_values_str;
 
-    for (int i = 0; i < target_columns.size(); ++i) {
+    for (size_t i = 0; i < target_columns.size(); ++i) {
         columns_and_values_str.append(columns_and_values_str.empty()
             ? (target_columns.at(i) + "=" + values.at(i))
             : (", " + (target_columns.at(i) + "=" + values.at(i))));

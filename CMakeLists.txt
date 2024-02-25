@@ -8,6 +8,7 @@ project(task_server VERSION ${PROJECT_VERSION})
 find_package(Boost COMPONENTS REQUIRED system filesystem)
 find_package(Threads)
 
+if(WIN32)
 # see https://www.sqlite.org/howtocompile.html
 include(FetchContent)
 FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202401231504.tar.gz")
@@ -19,6 +20,9 @@ FetchContent_MakeAvailable(json)
 if (NOT sqlite3_POPULATED)
   FetchContent_Populate(sqlite3)
 endif()
+else()
+find_package(SQLite3 REQUIRED)
+endif()
 
 include_directories(${Boost_INCLUDE_DIR})
 
@@ -26,7 +30,8 @@ add_definitions(-DBOOST_ALL_NO_LIB) # Without this string boost filesystem will 
 
 configure_file(version.h.in version.h)
 
-#Main target 
+#Main target
+if(WIN32) 
 add_executable(task_server main.cpp 
 client_session.cpp client_session_handle.cpp client_session_reply.cpp client_session_reply_error.cpp
 client_session_add_data.cpp client_session_del_data.cpp client_session_get_data.cpp client_session_set_data.cpp
@@ -36,6 +41,17 @@ request_manager.cpp request_manager_get_users.cpp request_manager_set_users.cpp 
 "${sqlite3_SOURCE_DIR}/sqlite3.c")
 
 add_executable(db_creator db_creator.cpp sql_execute_functions.cpp "${sqlite3_SOURCE_DIR}/sqlite3.c")
+else()
+add_executable(task_server main.cpp 
+client_session.cpp client_session_handle.cpp client_session_reply.cpp client_session_reply_error.cpp
+client_session_add_data.cpp client_session_del_data.cpp client_session_get_data.cpp client_session_set_data.cpp
+task_server.cpp
+data_storage.cpp data_storage_get.cpp data_storage_set.cpp data_storage_insert.cpp data_storage_delete.cpp
+request_manager.cpp request_manager_get_users.cpp request_manager_set_users.cpp request_manager_get_tasks.cpp request_manager_set_tasks.cpp request_manager_add_del.cpp
+)
+
+add_executable(db_creator db_creator.cpp sql_execute_functions.cpp)
+endif()
 
 add_library(lib_task_server lib.cpp)
 
@@ -56,16 +72,32 @@ target_include_directories(lib_task_server
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
+if(WIN32)
 target_link_libraries(task_server PRIVATE
 	${Boost_LIBRARIES}
 	nlohmann_json::nlohmann_json
     ${CMAKE_THREAD_LIBS_INIT}
     lib_task_server
 )
+else()
+target_link_libraries(task_server PRIVATE
+	sqlite3
+	${Boost_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    lib_task_server
+)
+endif()
 
+if(WIN32)
 target_link_libraries(db_creator PRIVATE
 	${Boost_LIBRARIES}
 )
+else()
+target_link_libraries(db_creator PRIVATE
+	sqlite3
+	${Boost_LIBRARIES}
+)
+endif()
 
 if (MSVC)
     target_compile_options(task_server PRIVATE

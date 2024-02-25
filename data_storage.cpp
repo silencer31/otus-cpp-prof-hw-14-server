@@ -2,6 +2,7 @@
 
 #include "sql_select_requests.h"
 
+#include <sqlite3.h>
 #include <iostream>
 
 bool DataStorage::init_database()

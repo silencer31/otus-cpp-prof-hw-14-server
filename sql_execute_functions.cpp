@@ -1,8 +1,9 @@
 #include "sql_execute_functions.h"
 
-#define COLUMN_WIDTH 28
-
+#include <cstring>
 #include <iostream>
+
+#define COLUMN_WIDTH 28
 
 void execute_request_output_columns(sqlite3* handle, const char* request, const char* table_name)
 {

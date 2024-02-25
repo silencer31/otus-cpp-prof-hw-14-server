@@ -10,6 +10,12 @@
 1. Создайте папку “build” внутри папки “otus-cpp-prof-hw-14-server”.
 2. Откройте консоль.
 3. Перейдите в консоли в папку "build".
+
+requires the language dialect "CXX20"
+
+export CC=/usr/bin/gcc-13
+export CXX=/usr/bin/g++-13
+
 4. Выполните команду:
 
 cmake ..
