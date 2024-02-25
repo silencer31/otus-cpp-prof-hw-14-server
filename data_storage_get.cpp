@@ -318,7 +318,7 @@ bool DataStorage::get_corresp_columns_int_values(const std::string& table,
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
             for (size_t i = 0; i < target_columns.size(); ++i) {
-                values.push_back(sqlite3_column_int(stmt, i+1));
+                values.push_back(sqlite3_column_int(stmt, static_cast<int>(i)+1));
             }
             
             break;
@@ -352,7 +352,7 @@ bool DataStorage::get_corresp_columns_txt_values(const std::string& table,
     while (SQLITE_ROW == sqlite3_step(stmt)) {
         if (find_value == (char*)sqlite3_column_text(stmt, 0)) {
             for (size_t i = 0; i < target_columns.size(); ++i) {
-                values.push_back((char*)sqlite3_column_text(stmt, i+1));
+                values.push_back((char*)sqlite3_column_text(stmt, static_cast<int>(i)+1));
             }
             
             break;
