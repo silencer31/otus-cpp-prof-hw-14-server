@@ -8,14 +8,14 @@
 #include <map>
 #include <utility>
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "request_manager.h"
 
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
-using namespace nlohmann::literals::json_literals;
+using namespace nlohmann::literals;
 
 // Виды ошибок в запросе от клиента.
 enum class RequestError {
