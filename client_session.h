@@ -15,7 +15,7 @@
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
-using namespace nlohmann::literals;
+using namespace nlohmann::literals::json_literals;
 
 // Виды ошибок в запросе от клиента.
 enum class RequestError {
