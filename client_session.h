@@ -19,10 +19,8 @@
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
+using namespace nlohmann::literals;
 
-#ifndef JSON_LITERALS_SEPARATE
-using namespace nlohmann::json::literals;
-#endif // JSON_LITERALS_SEPARATE
 
 // Виды ошибок в запросе от клиента.
 enum class RequestError {
