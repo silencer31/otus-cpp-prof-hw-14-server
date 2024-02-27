@@ -10,18 +10,19 @@ find_package(Threads)
 
 if(WIN32)
 # see https://www.sqlite.org/howtocompile.html
-include(FetchContent)
-FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202401231504.tar.gz")
-FetchContent_MakeAvailable(sqlite3)
+    include(FetchContent)
+    FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/snapshot/sqlite-snapshot-202401231504.tar.gz")
+    FetchContent_MakeAvailable(sqlite3)
 
-FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
-FetchContent_MakeAvailable(json)
+    FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+    FetchContent_MakeAvailable(json)
 
-if (NOT sqlite3_POPULATED)
-  FetchContent_Populate(sqlite3)
-endif()
+    if (NOT sqlite3_POPULATED)
+        FetchContent_Populate(sqlite3)
+    endif()
 else()
-find_package(SQLite3 REQUIRED)
+    find_package(SQLite3 REQUIRED)
+    find_package(nlohmann_json REQUIRED)
 endif()
 
 include_directories(${Boost_INCLUDE_DIR})
@@ -74,15 +75,15 @@ target_include_directories(lib_task_server
 
 if(WIN32)
 target_link_libraries(task_server PRIVATE
-	${Boost_LIBRARIES}
-	nlohmann_json::nlohmann_json
+    ${Boost_LIBRARIES}
+    nlohmann_json::nlohmann_json
     ${CMAKE_THREAD_LIBS_INIT}
     lib_task_server
 )
 else()
 target_link_libraries(task_server PRIVATE
-	sqlite3
-	${Boost_LIBRARIES}
+    sqlite3
+    ${Boost_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     lib_task_server
 )

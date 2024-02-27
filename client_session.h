@@ -12,7 +12,6 @@
 #include "nlohmann/json.hpp"
 #else
 #include <nlohmann/json.hpp>
-#include <json.hpp>
 #endif
 
 #include "request_manager.h"
