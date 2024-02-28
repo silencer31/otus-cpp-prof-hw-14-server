@@ -36,8 +36,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./server-boost-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: server-boost-0.0.${{ github.run_number }}-Linux.deb
+          asset_path: ./task_server-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: task_server-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
   build-documentation:
     permissions: write-all
