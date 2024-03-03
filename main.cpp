@@ -19,26 +19,26 @@ int main(int argc, char* argv[])
     
     if (argc != 3) {
         std::cout << "Usage: " << appname << " <port> <data base file name>" << std::endl;
-        return 1;
+        return -1;
     }
 
     int port = std::atoi(argv[1]);
 
     if (port <= 0) {
         std::cerr << "Incorrect port value\n";
-        return 1;
+        return -1;
     }
 
     std::string db_name{ argv[2] };
     if (!db_name.ends_with(".sqlite")) {
         std::cout << "Only sqlite data base file is supported!" << std::endl;
-        return 1;
+        return -1;
     }
 
     // Проверяем наличие указанного файла с базой данных.
     if (!boost::filesystem::exists(db_name)) {
         std::cout << "Specified data base file not found!" << std::endl;
-        return 1;
+        return -1;
     }
 
     try
