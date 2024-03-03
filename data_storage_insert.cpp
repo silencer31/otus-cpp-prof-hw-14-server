@@ -23,7 +23,7 @@ bool DataStorage::insert_row(const std::string& table, const std::string& values
     return false;
 }
 
-// Добавить в таблицу несколько новых строк со значениями.
+// Добавить в таблицу несколько строк со значениями.
 bool DataStorage::insert_rows(const std::string& table, const vector_str& rows)
 {
     std::string values_str;
@@ -78,7 +78,7 @@ bool DataStorage::insert_row_for_columns(const std::string& table, const vector_
     return false;
 }
 
-// Добавить в таблицу несколько новых строк со значениями для указанных столбцов.
+// Добавить в таблицу несколько строк со значениями для указанных столбцов.
 bool DataStorage::insert_rows_for_columns(const std::string& table, const vector_str& columns,
     const vector_str& rows)
 {

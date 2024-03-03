@@ -17,6 +17,9 @@ using add_req_map = std::map<std::string, AddRequest>; // Для коллекции подвидов
 using set_req_map = std::map<std::string, SetRequest>; // Для коллекции подвидов запросов изменения данных в базе.
 using del_req_map = std::map<std::string, DelRequest>; // Для коллекции подвидов запросов удаления данных из базы
 
+/**
+* @brief Класс - сервер обработки сетевых подключений и управления сессиями пользователей.
+*/
 class TaskServer : public std::enable_shared_from_this<TaskServer>
 {
 public:
@@ -24,41 +27,70 @@ public:
 
 	TaskServer(boost::asio::io_context& io_context, unsigned short port, const char* file_path);
 	
-	void shutdown_server(int session_id); // Получена команда на выключение сервера.
+	/**
+	* Получена команда на выключение сервера.
+	* @param session_id уникальный id сессии, из которой получена команда.
+	*/
+	void shutdown_server(int session_id);
 
-	void close_session(int session_id); // Закрытие сессии.
+	/**
+	* Закрытие сессии.
+	* @param session_id уникальный id сессии.
+	*/
+	void close_session(int session_id);
 
-	// Получаем тип команды в запросе от клиента или Unknown, если такой команды нет.
+	/**
+	* Распознаем тип команды по тексту в запросе от клиента или Unknown, если такой команды нет.
+	* @param comm команда в виде строки.
+	*/
 	CommandType command_type(const std::string& comm) {
 		return ((commands.find(comm) == commands.end()) ? CommandType::Unknown : commands[comm]);
 	}
 
-	// Получаем тип common запроса.
+	/**
+	* Распознаем тип запроса на получение общих (публичных) данных.
+	* @param comm запрос в виде строки.
+	*/
 	CommonRequest common_request_type(const std::string& comm) {
 		return ((common_requests.find(comm) == common_requests.end()) ? CommonRequest::Unknown : common_requests[comm]);
 	}
 
-	// Получаем тип get запроса.
+	/**
+	* Распознаем тип get запроса.
+	* @param comm запрос в виде строки.
+	*/
 	GetRequest get_request_type(const std::string& comm) {
 		return ((get_requests.find(comm) == get_requests.end()) ? GetRequest::Unknown : get_requests[comm]);
 	}
 
-	// Получаем тип add запроса.
+	/**
+	* Распознаем тип add запроса.
+	* @param comm запрос в виде строки.
+	*/
 	AddRequest add_request_type(const std::string& comm) {
 		return ((add_requests.find(comm) == add_requests.end()) ? AddRequest::Unknown : add_requests[comm]);
 	}
 
-	// Получаем тип set запроса.
+	/**
+	* Распознаем тип set запроса.
+	* @param comm запрос в виде строки.
+	*/
 	SetRequest set_request_type(const std::string& comm) {
 		return ((set_requests.find(comm) == set_requests.end()) ? SetRequest::Unknown : set_requests[comm]);
 	}
 
-	// Получаем тип del запроса.
+	/**
+	* Распознаем тип del запроса.
+	* @param comm запрос в виде строки.
+	*/
 	DelRequest del_request_type(const std::string& comm) {
 		return ((del_requests.find(comm) == del_requests.end()) ? DelRequest::Unknown : del_requests[comm]);
 	}
 
 private: // methods
+	/**
+	* Приступить к ожиданию новых подключений.
+	*/
 	void do_accept();
 	
 private: // data
