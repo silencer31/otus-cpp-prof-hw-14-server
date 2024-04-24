@@ -1,0 +1,23 @@
+<map id="task_server.h" name="task_server.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="755,5,854,31"/>
+<area shape="rect" id="Node000002" href="$client__session_8cpp.html" title=" " alt="" coords="5,87,134,112"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="739,25,478,42,313,58,146,82,114,88,113,83,145,76,312,53,478,36,739,19"/>
+<area shape="rect" id="Node000003" href="$client__session__add__data_8cpp.html" title=" " alt="" coords="158,79,290,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="739,27,543,47,423,63,303,82,291,84,290,79,302,76,423,57,543,42,739,22"/>
+<area shape="rect" id="Node000004" href="$client__session__del__data_8cpp.html" title=" " alt="" coords="315,79,443,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="739,32,608,53,455,82,444,84,443,79,454,76,607,48,739,26"/>
+<area shape="rect" id="Node000005" href="$client__session__get__data_8cpp.html" title=" " alt="" coords="468,79,597,120"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="748,38,598,82,597,77,747,33"/>
+<area shape="rect" id="Node000006" href="$client__session__handle_8cpp.html" title=" " alt="" coords="622,87,795,112"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="779,43,725,88,721,84,776,39"/>
+<area shape="rect" id="Node000007" href="$client__session__reply_8cpp.html" title=" " alt="" coords="819,87,981,112"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="832,39,887,84,884,88,829,43"/>
+<area shape="rect" id="Node000008" href="$client__session__reply__error_8cpp.html" title=" " alt="" coords="1006,79,1144,120"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="861,33,1008,76,1007,81,860,38"/>
+<area shape="rect" id="Node000009" href="$client__session__set__data_8cpp.html" title=" " alt="" coords="1168,79,1297,120"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="869,26,1002,47,1157,76,1168,79,1167,84,1156,82,1001,53,868,32"/>
+<area shape="rect" id="Node000010" href="$main_8cpp.html" title=" " alt="" coords="1321,87,1394,112"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="869,19,1068,35,1189,52,1310,76,1331,83,1330,88,1309,82,1189,57,1067,40,869,24"/>
+<area shape="rect" id="Node000011" href="$task__server_8cpp.html" title=" " alt="" coords="1418,87,1532,112"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="870,20,1107,36,1257,53,1407,76,1437,83,1435,88,1406,82,1257,58,1107,42,869,25"/>
+</map>

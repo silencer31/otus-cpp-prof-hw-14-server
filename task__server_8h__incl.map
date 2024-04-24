@@ -1,0 +1,32 @@
+<map id="task_server.h" name="task_server.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="416,5,516,31"/>
+<area shape="rect" id="Node000002" href="$client__session_8h.html" title=" " alt="" coords="409,79,523,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="469,31,469,63,463,63,463,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,153,111,178"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="409,106,126,155,125,150,408,101"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="135,153,317,178"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="426,108,282,150,280,145,425,103"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="341,153,399,178"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="451,107,400,146,396,141,448,103"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="520,300,588,326"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="466,105,461,139,461,158,465,178,478,209,496,239,534,287,530,290,491,242,473,212,459,179,456,159,455,138,460,105"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="474,153,520,178"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="474,104,488,137,483,139,469,106"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="544,153,596,178"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="485,103,541,141,538,146,482,107"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="620,153,749,178"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="504,103,634,145,632,150,502,108"/>
+<area shape="rect" id="Node000010" href="$request__manager_8h.html" title=" " alt="" coords="774,153,905,178"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="524,101,761,147,760,152,523,107"/>
+<area shape="rect" id="Node000011" href="$data__storage_8h.html" title=" " alt="" coords="756,226,862,252"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="837,180,822,213,817,211,832,178"/>
+<area shape="poly" id="edge14_Node000011_Node000006" title=" " alt="" coords="766,255,603,301,602,295,765,250"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="670,300,726,326"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="791,255,731,294,728,289,788,250"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="751,300,808,326"/>
+<area shape="poly" id="edge12_Node000011_Node000013" title=" " alt="" coords="806,253,793,286,788,284,801,251"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="833,300,886,326"/>
+<area shape="poly" id="edge13_Node000011_Node000014" title=" " alt="" coords="819,251,844,286,840,289,815,254"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="910,300,979,326"/>
+<area shape="poly" id="edge15_Node000011_Node000015" title=" " alt="" coords="833,250,909,290,907,295,831,255"/>
+</map>
