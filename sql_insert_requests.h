@@ -36,7 +36,7 @@ const char* insert_into_task_statuses = "INSERT INTO TaskStatuses (status_type_n
 const char* insert_into_tasks = "INSERT INTO Tasks "
 "(task_unique_id, user_unique_id, status_type_number, deadline, task_name, task_description) "
 "VALUES "
-"(1,1,2,'2023-05-30','Create operator','Create a new data base operator'), "
-"(2,2,2,'2023-05-25','Make reserv','Make a new reserv copy of database'), "
-"(3,3,2,'2023-05-14','Have a rest','Choose a time period for vacation'), "
-"(4,3,3,'2023-05-15','Repair printer','Buy paper and cartriges for office printer')";
+"(1,1,2,'2024-05-30','Create operator','Create a new data base operator'), "
+"(2,2,2,'2024-05-25','Make reserv','Make a new reserv copy of database'), "
+"(3,3,2,'2024-05-14','Have a rest','Choose a time period for vacation'), "
+"(4,3,3,'2024-05-15','Repair printer','Buy paper and cartriges for office printer')";
